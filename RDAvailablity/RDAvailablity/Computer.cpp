@@ -9,7 +9,7 @@ Computer::Computer()
 	_ip = "\0";
 	_mac = "\0";
 	_status = Computer::Unknown;
-	_isSelected = false;
+	_selected = false;
 }
 
 Computer::Computer(string name,string ip,string mac)
@@ -19,7 +19,18 @@ Computer::Computer(string name,string ip,string mac)
 	_ip = ip;
 	_mac = mac;
 	_status = Computer::Unknown;
-	_isSelected = false;
+	_selected = false;
+}
+
+Computer::Computer(const Computer & comp)
+{
+	_name = comp._name;
+	_user = comp._user;
+	_status = comp._status;
+	_mac = comp._mac;
+	_ip = comp._ip;
+	_selected = comp._selected;
+
 }
 
 Computer::~Computer()
@@ -43,6 +54,11 @@ void Computer::setUser(char* user)
 int Computer::getStatus()
 {
 	return _status;
+}
+
+bool Computer::isSelected()
+{
+	return _selected;
 }
 
 string Computer::getName()
@@ -143,23 +159,81 @@ void Computer::checkUser()
 
 void Computer::remoteDesktop()
 {
-	//TODO: Add a check if it needs to use the IP adress or not
-	string command = "mstsc.exe /v:" + _name;
-	FILE *f = _popen(command.c_str(), "r");
-	return;
-
+	//If the staus is known, then connect using the name
+	if (_status != 2)
+	{
+		string command = "mstsc.exe /v:" + _name;
+		FILE *f = _popen(command.c_str(), "r");
+	}
+	//The stauts is unknown then try to connect using the IP
+	else
+	{
+		string command = "mstsc.exe /v:" + _ip;
+		FILE *f = _popen(command.c_str(), "r");
+	}
 }
 
 void Computer::labView()
 {
-	string command = "C:\\Program Files(x86)\\Microsoft Configuration Manager\\AdminConsole\\bin\\i386\\CmRcViewer.exe " + _name;
+	string command = "\"C:\\Program Files (x86)\\Microsoft Configuration Manager\\AdminConsole\\bin\\i386\\CmRcViewer.exe\" " + _name;
 	FILE *f = _popen(command.c_str(), "r");
 	return;
+}
+
+void Computer::writeCommand(string command)
+{
+	FILE* f = _popen(command.c_str(), "r");
 }
 
 void Computer::display()
 {
 	cout << (*this) << endl;
+}
+
+bool Computer::operator<(Computer & comp)
+{
+	if (comp._name < _name)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Computer::operator>(Computer & comp)
+{
+	if (comp._name > _name)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Computer::operator==(Computer & comp)
+{
+	if (comp._name == _name)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Computer::operator=(const Computer & comp)
+{
+	_name = comp._name;
+	_user = comp._user;
+	_status = comp._status;
+	_mac = comp._mac;
+	_ip = comp._ip;
+	_selected = comp._selected;
 }
 
 void Computer::setStatus(Status newStatus)
@@ -178,6 +252,11 @@ void Computer::setIP(string& ip)
 {
 	_ip = ip;
 	return;
+}
+
+void Computer::setSelection(bool selection)
+{
+	_selected = selection;
 }
 
 int Computer::turnOn()

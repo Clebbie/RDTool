@@ -14,11 +14,12 @@ protected:
 	Status _status;
 	string _mac;
 	string _ip;
-	bool _isSelected;
+	bool _selected;
 
 public:
 	Computer();
 	Computer(string name,string ip,string mac);
+	Computer(const Computer& comp);
 	~Computer();
 
 	//getters
@@ -27,6 +28,7 @@ public:
 	string getMac();
 	string getIP();
 	int getStatus();
+	bool isSelected();
 
 	//setters
 	void setName(string name);
@@ -34,17 +36,25 @@ public:
 	void setStatus(Status newStatus);
 	void setMac(string& mac);
 	void setIP(string& ip);
+	void setSelection(bool selection);
 	
-	//Magic Packets
+	//Four main functions
 	int turnOn();
+	void remoteDesktop();
+	void labView();
+	void writeCommand(string command);
 
 	//extras
 	char* deepCopy(string cString);
 	void checkUser();
-	void remoteDesktop();
-	void labView();
 	void display();
-	string* toString(const char* cString);
+
+	bool operator <(Computer& comp);
+	bool operator >(Computer& comp);
+	bool operator==(Computer& comp);
+	void operator=(const Computer& comp);
+	
+	
 	friend ostream& operator<< (  ostream& os,  Computer& comp);
 	
 	

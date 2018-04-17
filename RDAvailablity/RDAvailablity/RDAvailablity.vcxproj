@@ -116,10 +116,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Computer.cpp" />
+    <ClCompile Include="ComputerTree.cpp" />
     <ClCompile Include="Driver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Computer.h" />
+    <ClInclude Include="ComputerTree.h" />
     <ClInclude Include="DataFrame.h" />
   </ItemGroup>
   <ItemGroup>

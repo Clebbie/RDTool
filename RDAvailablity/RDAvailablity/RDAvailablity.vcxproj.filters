@@ -21,12 +21,18 @@
     <ClInclude Include="DataFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ComputerTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Computer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Driver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ComputerTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

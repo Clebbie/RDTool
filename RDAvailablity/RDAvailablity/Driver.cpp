@@ -1,4 +1,5 @@
 #include"Computer.h"
+#include"ComputerTree.h"
 #include<list>
 
 
@@ -102,10 +103,34 @@ int main()
 		numberOfInfo = 0;
 		letterIndex = 0;
 	}
-	for (list<Computer>::iterator it = (*comps).begin(); it != (*comps).end();it++)
+	/*for (list<Computer>::iterator it = (*comps).begin(); it != (*comps).end();it++)
 	{
 		(*it).checkUser();
 		(*it).display();
+	}*/
+	/*cout << "\n\nNow Starting remoteviewer..." << endl;
+	list<Computer>::iterator it = (*comps).begin();
+	cout<< "This is the computer to view " << (*it).getName() << endl;
+	(*it).labView();*/
+	ComputerTree<Computer> *testerino = new ComputerTree<Computer>();
+
+	for (list<Computer>::iterator it = (*comps).begin(); it != (*comps).end(); it++)
+	{
+		testerino->insert(&(*it));
 	}
+
+	//cout<< (*testerino) << endl;
+
+	(*testerino).zig();
+	cout << "Inorder display" << endl;
+	(*testerino).inOderDisplay();
+	cout << "Preorder display" << endl;
+	(*testerino).preOrderDisplay();
+	
+
+	
+
+
+
 	return 0;
 }
