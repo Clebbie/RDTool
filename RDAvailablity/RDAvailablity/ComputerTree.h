@@ -17,7 +17,7 @@ public:
 	void setInfo(DT* info);
 	void insert(DT* computer);
 	void remove(DT* computer);
-	DT* find(DT* computer);
+	ComputerTree<DT>& find(DT* computer);
 	ComputerTree<DT>& getLeft();
 	ComputerTree<DT>& getRight();
 	void balance();
@@ -83,22 +83,77 @@ inline void ComputerTree<DT>::insert(DT* computer)
 	}else if ((*computer) > (*_info))
 	{
 		(*_right).insert(computer);
-		
 	}
-	return;
+	balance();
 
 }
 
 template<class DT>
-inline DT* ComputerTree<DT>::find(DT * computer)
+inline void ComputerTree<DT>::remove(DT * computer)
 {
+	//TODO: Finish remove and add find 
+	ComputerTree<DT> temp = find(computer);
+
+	// case 2 one child
+	if (temp._left->_info == nullptr)
+	{
+		//One child
+		if (temp._right->_info != nullptr)
+		{
+			delete _info;
+			temp._info = temp._right->_info;
+			temp._right = temp._right->._right;
+			_left = temp._right->._left;
+		}// No child
+		else
+		{
+			delete temp._left;
+			deletetemp._right;
+			delete temp._info;
+			temp._info = nullptr;
+		}
+	}
+	else
+	{
+		//Case 3 two children
+		if (temp._right->_info != nullptr)
+		{
+			ComputerTree<DT>* max = (*_left).getMax();
+			delete temp._info;
+			temp._info = max;
+			remove((*max)._info);
+			max = nullptr;
+			delete max;
+		}
+		// One child
+		else
+		{
+			delete temp._info;
+			temp._info = temp._left->._info;
+			temp. = temp._left->._left;
+			temp._right = temp._left->._right;
+		}
+	}
+}
+
+template<class DT>
+inline ComputerTree<DT>& ComputerTree<DT>::find(DT * computer)
+{
+	//TODO: Make sure this works properlly and change return type.
 	if ((*_info) == (*computer))
 	{
-	return _info;
+	return *this;
 	}
 	else if (_left == nullptr &&_right == nullptr)
 	{
-		return _info;
+		if (_info == nullptr)
+		{
+			cout << "NOT FOUND" << endl;
+		}
+		else
+		{
+			*this;
+		}
 	}
 	if ((*_info) <= (*computer))
 	{
@@ -108,7 +163,6 @@ inline DT* ComputerTree<DT>::find(DT * computer)
 	{
 	return (*_left).find(computer);
 	}
-	
 }
 
 template<class DT>
@@ -124,6 +178,27 @@ inline ComputerTree<DT>& ComputerTree<DT>::getRight()
 }
 
 template<class DT>
+inline void ComputerTree<DT>::balance()
+{
+	int balanceFactor;
+
+	if (_info != nullptr)
+	{
+		balanceFactor = (*_left).height() - (*_right).height();
+
+		if (balanceFactor < -1)
+		{
+			zag();
+		}
+		else if (balanceFactor > 1)
+		{
+			zig();
+		}
+	}
+
+}
+
+template<class DT>
 inline int ComputerTree<DT>::height()
 {
 	int leftHeight = 0;
@@ -131,9 +206,6 @@ inline int ComputerTree<DT>::height()
 	if (_info != nullptr)
 	{
 		leftHeight = _left->height() + 1;
-	}
-	if (_info != nullptr)
-	{
 		rightHeight = _right->height() + 1;
 	}
 	if (leftHeight >= rightHeight)
@@ -158,11 +230,9 @@ inline void ComputerTree<DT>::zig()
 	//Creating the temp tree and copying the right to the right of the temp tree...
 	ComputerTree<DT>* T = new ComputerTree<DT>();
 	(*T)._right = _right;
-	//_right = new ComputerTree<DT>();
 	
 	//Copying the left right leaf over to the temp tree and replacing the left right with a new pointer...
 	(*T)._left = (*_left)._right;
-	//(*_left)._right = new ComputerTree<DT>();
 
 	//Copying the info to the temp info and setting the info to the left info
 	(*T).setInfo(_info);
@@ -180,10 +250,9 @@ inline void ComputerTree<DT>::zag()
 {
 	//Creating the temp tree and copying the left to the left of the temp tree...
 	ComputerTree<DT>* T = new ComputerTree<DT>();
-	(*T)._right = (*_right).left;
+	(*T)._right = (*_right)._left;
 
 	//Copying the right left leaf over to the temp tree and replacing the right left with a new pointer... 
-
 	(*T)._left = _left;
 
 	//Copying the info to the temp info and setting the info to the right info
@@ -192,7 +261,6 @@ inline void ComputerTree<DT>::zag()
 
 	//Copying left right to the right...
 	_right = (*_right)._right;
-
 
 	//Copying temp tree over to the left...
 	_left = T;

@@ -214,6 +214,38 @@ bool Computer::operator>(Computer & comp)
 	}
 }
 
+bool Computer::operator>=(Computer & comp)
+{
+	if (comp._name > _name)
+	{
+		return true;
+	}
+	else if (comp._name == _name)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Computer::operator<=(Computer & comp)
+{
+	if (comp._name < _name)
+	{
+		return true;
+	}
+	else if (comp._name == _name)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 bool Computer::operator==(Computer & comp)
 {
 	if (comp._name == _name)

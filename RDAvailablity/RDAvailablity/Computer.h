@@ -51,6 +51,8 @@ public:
 
 	bool operator <(Computer& comp);
 	bool operator >(Computer& comp);
+	bool operator >=(Computer& comp);
+	bool operator <=(Computer& comp);
 	bool operator==(Computer& comp);
 	void operator=(const Computer& comp);
 	

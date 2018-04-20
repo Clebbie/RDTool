@@ -126,6 +126,9 @@ int main()
 	(*testerino).inOderDisplay();
 	cout << "Preorder display" << endl;
 	(*testerino).preOrderDisplay();
+	Computer* foonerino = new Computer("LS-OA-01", "10.194.196.45", "18-66-DA-23B097");
+	cout << "**************************Find**************************" << endl;
+	(*testerino).find(foonerino);
 	
 
 	
