@@ -103,11 +103,7 @@ int main()
 		numberOfInfo = 0;
 		letterIndex = 0;
 	}
-	/*for (list<Computer>::iterator it = (*comps).begin(); it != (*comps).end();it++)
-	{
-		(*it).checkUser();
-		(*it).display();
-	}*/
+
 	/*cout << "\n\nNow Starting remoteviewer..." << endl;
 	list<Computer>::iterator it = (*comps).begin();
 	cout<< "This is the computer to view " << (*it).getName() << endl;
@@ -120,14 +116,17 @@ int main()
 	}
 
 	//cout<< (*testerino) << endl;
-
+	cout << "*****************************Checking Statuses*************************************" << endl;
+	
 	(*testerino).zig();
+	testerino->checkStatus();
 	cout << "Inorder display" << endl;
-	(*testerino).inOderDisplay();
+	(*testerino).inOrderDisplay();
 	cout << "Preorder display" << endl;
 	(*testerino).preOrderDisplay();
-	Computer* foonerino = new Computer("LS-OA-01", "10.194.196.45", "18-66-DA-23B097");
 	cout << "**************************Find**************************" << endl;
+	Computer* foonerino = new Computer("LS-OA-01", "10.194.196.45", "18-66-DA-23B097");
+
 	(*testerino).find(foonerino);
 	
 

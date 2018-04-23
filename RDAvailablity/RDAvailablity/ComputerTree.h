@@ -20,12 +20,13 @@ public:
 	ComputerTree<DT>& find(DT* computer);
 	ComputerTree<DT>& getLeft();
 	ComputerTree<DT>& getRight();
+	void checkStatus();
 	void balance();
 	int height();
 	void display();
 	void zig();
 	void zag();
-	void inOderDisplay();
+	void inOrderDisplay();
 	void preOrderDisplay();
 	void operator=(const ComputerTree<DT>& compTree);
 	template<class DT>
@@ -178,6 +179,23 @@ inline ComputerTree<DT>& ComputerTree<DT>::getRight()
 }
 
 template<class DT>
+inline void ComputerTree<DT>::checkStatus()
+{
+	if (_left != nullptr)
+	{
+		_left->checkStatus();
+	}
+	if (_info != nullptr)
+	{
+		_info->checkUser();
+	}
+	if (_right != nullptr)
+	{
+		_right->checkStatus();
+	}
+}
+
+template<class DT>
 inline void ComputerTree<DT>::balance()
 {
 	int balanceFactor;
@@ -267,11 +285,11 @@ inline void ComputerTree<DT>::zag()
 }
 
 template<class DT>
-inline void ComputerTree<DT>::inOderDisplay()
+inline void ComputerTree<DT>::inOrderDisplay()
 {
 	if (_left != nullptr)
 	{
-		_left->display();
+		_left->inOrderDisplay();
 		cout << endl;
 	}
 	if (_info != nullptr)
@@ -281,7 +299,7 @@ inline void ComputerTree<DT>::inOderDisplay()
 	}
 	if (_right != nullptr)
 	{
-		_right->display();
+		_right->inOrderDisplay();
 		cout << endl;
 	}
 }
@@ -289,19 +307,19 @@ inline void ComputerTree<DT>::inOderDisplay()
 template<class DT>
 inline void ComputerTree<DT>::preOrderDisplay()
 {
+	if (_left != nullptr)
+	{
+		_left->preOrderDisplay();
+		cout << endl;
+	}
 	if (_info != nullptr)
 	{
 		_info->display();
 		cout << endl;
 	}
-	if (_left != nullptr)
-	{
-		_left->display();
-		cout << endl;
-	}
 	if (_right != nullptr)
 	{
-		_right->display();
+		_right->preOrderDisplay();
 		cout << endl;
 	}
 }
