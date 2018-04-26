@@ -20,6 +20,8 @@ public:
 	ComputerTree<DT>& find(DT* computer);
 	ComputerTree<DT>& getLeft();
 	ComputerTree<DT>& getRight();
+	ComputerTree<DT>& getMax();
+	ComputerTree<DT>& getMin();
 	void checkStatus();
 	void balance();
 	int height();
@@ -92,47 +94,46 @@ inline void ComputerTree<DT>::insert(DT* computer)
 template<class DT>
 inline void ComputerTree<DT>::remove(DT * computer)
 {
-	//TODO: Finish remove and add find 
-	ComputerTree<DT> temp = find(computer);
-
+	ComputerTree<DT>* temp = &(find(computer));
 	// case 2 one child
-	if (temp._left->_info == nullptr)
+	if ((*temp)._left->_info == nullptr)
 	{
-		//One child
-		if (temp._right->_info != nullptr)
+		//At most one child
+		if ((*temp)._right->_info != nullptr)
 		{
-			delete _info;
-			temp._info = temp._right->_info;
-			temp._right = temp._right->._right;
-			_left = temp._right->._left;
-		}// No child
+			ComputerTree<DT> min = (*temp)._right->getMin();
+			(*temp)._info = nullptr;
+			//delete (*temp)._info;
+			(*temp)._info = min._info;
+			(*temp)._right->remove((*temp)._info);
+		}
+		// No child
 		else
 		{
-			delete temp._left;
-			deletetemp._right;
-			delete temp._info;
-			temp._info = nullptr;
+			delete (*temp)._left;
+			delete (*temp)._right;
+			(*temp)._info = nullptr;
+			//delete (*temp)._info;
 		}
 	}
 	else
 	{
+		ComputerTree<DT> max = (*temp)._left->getMax();
 		//Case 3 two children
-		if (temp._right->_info != nullptr)
+		if ((*temp)._right->_info != nullptr)
 		{
-			ComputerTree<DT>* max = (*_left).getMax();
-			delete temp._info;
-			temp._info = max;
-			remove((*max)._info);
-			max = nullptr;
-			delete max;
+			(*temp)._info = nullptr;
+			delete (*temp)._info;
+			(*temp)._info = max._info;
+			(*temp)._left->remove((*temp)._info);
 		}
 		// One child
 		else
 		{
-			delete temp._info;
-			temp._info = temp._left->._info;
-			temp. = temp._left->._left;
-			temp._right = temp._left->._right;
+			(*temp)._info = nullptr;
+			delete (*temp)._info;
+			(*temp)._info = max._info;
+			(*temp)._left->remove((*temp)._info);
 		}
 	}
 }
@@ -140,7 +141,6 @@ inline void ComputerTree<DT>::remove(DT * computer)
 template<class DT>
 inline ComputerTree<DT>& ComputerTree<DT>::find(DT * computer)
 {
-	//TODO: Make sure this works properlly and change return type.
 	if ((*_info) == (*computer))
 	{
 	return *this;
@@ -179,8 +179,37 @@ inline ComputerTree<DT>& ComputerTree<DT>::getRight()
 }
 
 template<class DT>
+inline ComputerTree<DT>& ComputerTree<DT>::getMax()
+{
+	// Used in balance
+	if (_right != nullptr)
+	{
+		return (*_right).getMax();
+	}
+	else
+	{
+		return (*this);
+	}
+}
+
+template<class DT>
+inline ComputerTree<DT>& ComputerTree<DT>::getMin()
+{
+	// Used in balance
+	if (_left != nullptr)
+	{
+		return (*_left).getMin();
+	}
+	else
+	{
+		return (*this);
+	}
+}
+
+template<class DT>
 inline void ComputerTree<DT>::checkStatus()
 {
+	//In order traversal checking statuses
 	if (_left != nullptr)
 	{
 		_left->checkStatus();
@@ -199,9 +228,15 @@ template<class DT>
 inline void ComputerTree<DT>::balance()
 {
 	int balanceFactor;
-
-	if (_info != nullptr)
+	
+	//Go down left of the tree and balance
+	if (_left != nullptr)
 	{
+		_left->balance();
+	}
+	//balance this tree
+	if (_info != nullptr)
+	{		
 		balanceFactor = (*_left).height() - (*_right).height();
 
 		if (balanceFactor < -1)
@@ -213,16 +248,24 @@ inline void ComputerTree<DT>::balance()
 			zig();
 		}
 	}
+	//Balance the right trees
+	if (_right != nullptr)
+	{
+		_right->balance();
+	}
+	
 
 }
 
 template<class DT>
 inline int ComputerTree<DT>::height()
 {
+	//Intialize the hieights to 0
 	int leftHeight = 0;
 	int rightHeight = 0;
 	if (_info != nullptr)
 	{
+		//Get left and right heights
 		leftHeight = _left->height() + 1;
 		rightHeight = _right->height() + 1;
 	}
@@ -287,7 +330,7 @@ inline void ComputerTree<DT>::zag()
 template<class DT>
 inline void ComputerTree<DT>::inOrderDisplay()
 {
-	if (_left != nullptr)
+	if ((*_left)._info != nullptr)
 	{
 		_left->inOrderDisplay();
 		cout << endl;
@@ -297,7 +340,7 @@ inline void ComputerTree<DT>::inOrderDisplay()
 		_info->display();
 		cout << endl;
 	}
-	if (_right != nullptr)
+	if ((*_right)._info != nullptr)
 	{
 		_right->inOrderDisplay();
 		cout << endl;

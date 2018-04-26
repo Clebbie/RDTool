@@ -192,26 +192,12 @@ void Computer::display()
 
 bool Computer::operator<(Computer & comp)
 {
-	if (comp._name < _name)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return (_name < comp._name);
 }
 
 bool Computer::operator>(Computer & comp)
 {
-	if (comp._name > _name)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return (_name > comp._name);
 }
 
 bool Computer::operator>=(Computer & comp)
