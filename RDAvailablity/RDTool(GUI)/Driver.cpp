@@ -1,12 +1,18 @@
 #include"Computer.h"
 #include"ComputerTree.h"
+#include"MyForm.h"
 #include <iostream>
-#include<list>
+using namespace System;
+using namespace System::Windows::Forms;
 
 
-
-int main()
+[STAThreadAttribute]
+int main(cli::array<String^>^args) 
 {
+	Application::EnableVisualStyles();
+	Application::SetCompatibleTextRenderingDefault(false);
+	
+
 	//TODO: Replace this with the actual data structure
 	ComputerTree<Computer> *testerino = new ComputerTree<Computer>();
 	char* header = new char[250];				//Will hold the header
@@ -14,6 +20,7 @@ int main()
 	char* computerName = new char[100];			//Holds the Comp name as a cstring
 	char* computerIP = new char[100];			//^^ IP
 	char* computerMac = new char[100];			//^^ Mac
+	char* computerCollege = new char[100];		//^^ College
 	int numberOfInfo = 0;						//Keeps track of which information is being read
 	int letterIndex = 0;						//Keeps track of where the cin is on computerInfo
 	int writeIndex = 0;							//Keeps track of where to write. Resetes after after each coloumn
@@ -21,6 +28,7 @@ int main()
 	string* name = nullptr;
 	string* ip = nullptr;
 	string* mac = nullptr;
+	string* college = nullptr;
 	//TODO: Uncomment this when using on the actual thing
 	cin.getline(header, 250);
 
@@ -86,18 +94,26 @@ int main()
 					numberOfInfo++;
 				}
 				//Reading the Mac
-				else
+				else if (numberOfInfo == 2)
 				{
 					computerMac[writeIndex] = '\0';
 					writeIndex = 0;
 					mac = new string(computerMac);
 					delete[] computerMac;
 					computerMac = new char[100];
+					numberOfInfo++;
+				}
+				else
+				{
+					computerCollege[writeIndex] = '\0';
+					writeIndex = 0;
+					college = new string(computerCollege);
+					delete[] computerCollege;
+					computerCollege = new char[100];
 					isDone = true;
 					//Creates the computer and adds it to the data structure
-					Computer* temp = new Computer((*name), (*ip), (*mac));
+					Computer* temp = new Computer((*name), (*ip), (*mac), (*college));
 					testerino->insert(temp);
-					
 				}
 			}
 		}
@@ -108,6 +124,8 @@ int main()
 		//Check if eof
 		cin.peek();
 	}
-	testerino->inOrderDisplay();
+	RDToolGUI::MyForm form(*testerino);
+	Application::Run(%form);
+	//testerino->inOrderDisplay();
 	return 0;
 }

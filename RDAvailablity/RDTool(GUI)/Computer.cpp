@@ -12,12 +12,15 @@ Computer::Computer()
 	_selected = false;
 }
 
-Computer::Computer(string name,string ip,string mac)
+Computer::Computer(string name,string ip,string mac,string college)
 {
 	_name = name;
 	_user = string();
 	_ip = ip;
 	_mac = mac;
+	_college = college;
+	size_t found = _name.find_last_of('-');
+	_lab = _name.substr(0, found);
 	_status = Computer::Unknown;
 	_selected = false;
 }
@@ -35,7 +38,7 @@ Computer::Computer(const Computer & comp)
 
 Computer::~Computer()
 {
-
+	//TODO: Finish writing this
 }
 
 void Computer::setName(string name)
@@ -188,6 +191,16 @@ void Computer::writeCommand(string command)
 void Computer::display()
 {
 	cout << (*this) << endl;
+}
+
+string Computer::getLab()
+{
+	return _lab;
+}
+
+string Computer::getCollege()
+{
+	return _college;
 }
 
 bool Computer::operator<(Computer & comp)

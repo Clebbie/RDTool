@@ -1,5 +1,6 @@
 #pragma once
 #include<string>
+using namespace std;
 
 template <class DT>
 class ComputerTree
@@ -22,6 +23,7 @@ public:
 	ComputerTree<DT>& getRight();
 	ComputerTree<DT>& getMax();
 	ComputerTree<DT>& getMin();
+	string* getCollegeAndLab();
 	void checkStatus();
 	void balance();
 	int height();
@@ -204,6 +206,19 @@ inline ComputerTree<DT>& ComputerTree<DT>::getMin()
 	{
 		return (*this);
 	}
+}
+
+template<class DT>
+inline string* ComputerTree<DT>::getCollegeAndLab()
+{
+	//Intialize the hieights to 0
+	string* out = "";
+	if (_info != nullptr)
+	{
+		//Get left and right heights
+		(*out) = (*_info).getCollege() + "/" + (*_info).getLab();
+	}
+	return out;
 }
 
 template<class DT>
