@@ -6,7 +6,6 @@
 #include <iomanip>
 
 
-
 int main()
 {
 	//TODO: Replace this with the actual data structure
@@ -61,92 +60,6 @@ int main()
 			//Once the objec is in place, we add it to the tree
 			Computer* temp = new Computer((computerName), (ipAddress), (macAddress));
 			testerino->insert(temp);
-
-			/*
-			std::cout << "Computer Name: " << computerName << endl;
-			std::cout << "IP Address:  " << ipAddress << endl;
-			std::cout << "MAC Address: " << macAddress << endl;
-			std::cout << endl;
-			*/
-
-			/*
-			isDone = false;
-			//Go through computer until you reach the end
-			while (!isDone)
-			{
-				//check to see if the readIndex is a comma or end of line
-				if (computerInfo[letterIndex] != ',' && computerInfo[letterIndex] != '\0')
-				{
-					//If reading the name
-					if (numberOfInfo == 0)
-					{
-						computerName[writeIndex] = computerInfo[letterIndex];
-						writeIndex++;
-						letterIndex++;
-					}
-					//If reading the IP
-					else if (numberOfInfo == 1)
-					{
-						computerIP[writeIndex] = computerInfo[letterIndex];
-						writeIndex++;
-						letterIndex++;
-					}
-					//Reading the Mac
-					else
-					{
-						computerMac[writeIndex] = computerInfo[letterIndex];
-						writeIndex++;
-						letterIndex++;
-					}
-				}
-				//If the readIndex is a comma or end of line
-				else
-				{
-					//If done reading the name
-					if (numberOfInfo == 0)
-					{
-						computerName[writeIndex] = '\0';
-						writeIndex = 0;
-						letterIndex++;
-						name = new string(computerName);
-						delete[] computerName;
-						computerName = new char[100];
-						numberOfInfo++;
-					}
-					//If done reading the IP
-					else if (numberOfInfo == 1)
-					{
-						computerIP[writeIndex] = '\0';
-						writeIndex = 0;
-						letterIndex++;
-						ip = new string(computerIP);
-						delete[] computerIP;
-						computerIP = new char[100];
-						numberOfInfo++;
-					}
-					//Reading the Mac
-					else
-					{
-						computerMac[writeIndex] = '\0';
-						writeIndex = 0;
-						mac = new string(computerMac);
-						delete[] computerMac;
-						computerMac = new char[100];
-						isDone = true;
-						//Creates the computer and adds it to the data structure
-						Computer* temp = new Computer((*name), (*ip), (*mac));
-						testerino->insert(temp);
-
-					}
-				}
-			}
-
-			//Resets for the next line
-			numberOfInfo = 0;
-			letterIndex = 0;
-			//Check if eof
-			//cin.peek();
-			*/
 		}
 	}
 	else
