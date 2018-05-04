@@ -1,5 +1,6 @@
 #pragma once
 #include<string>
+using namespace std;
 
 template <class DT>
 class ComputerTree
@@ -18,10 +19,11 @@ public:
 	void insert(DT* computer);
 	void remove(DT* computer);
 	ComputerTree<DT>& find(DT* computer);
-	ComputerTree<DT>& getLeft();
-	ComputerTree<DT>& getRight();
+	ComputerTree<DT>* getLeft();
+	ComputerTree<DT>* getRight();
 	ComputerTree<DT>& getMax();
 	ComputerTree<DT>& getMin();
+	string* getCollegeAndLab();
 	void checkStatus();
 	void balance();
 	int height();
@@ -80,10 +82,12 @@ inline void ComputerTree<DT>::insert(DT* computer)
 		_left = new ComputerTree<DT>();
 		_right = new ComputerTree<DT>();
 		
-	}else if ((*computer) < (*_info))
+	}
+	else if ((*computer) < (*_info))
 	{
 		(*_left).insert(computer);
-	}else if ((*computer) > (*_info))
+	}
+	else if ((*computer) > (*_info))
 	{
 		(*_right).insert(computer);
 	}
@@ -167,15 +171,15 @@ inline ComputerTree<DT>& ComputerTree<DT>::find(DT * computer)
 }
 
 template<class DT>
-inline ComputerTree<DT>& ComputerTree<DT>::getLeft()
+inline ComputerTree<DT>* ComputerTree<DT>::getLeft()
 {
-	return (*_left);
+	return (_left);
 }
 
 template<class DT>
-inline ComputerTree<DT>& ComputerTree<DT>::getRight()
+inline ComputerTree<DT>* ComputerTree<DT>::getRight()
 {
-	return (*_right);
+	return (_right);
 }
 
 template<class DT>
@@ -204,6 +208,19 @@ inline ComputerTree<DT>& ComputerTree<DT>::getMin()
 	{
 		return (*this);
 	}
+}
+
+template<class DT>
+inline string* ComputerTree<DT>::getCollegeAndLab()
+{
+	//Intialize the hieights to 0
+	string* out = "";
+	if (_info != nullptr)
+	{
+		//Get left and right heights
+		(*out) = (*_info).getCollege() + "/" + (*_info).getLab();
+	}
+	return out;
 }
 
 template<class DT>

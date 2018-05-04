@@ -4,10 +4,15 @@
 #include <list>
 #include <fstream>
 #include <iomanip>
-
+#include"MainWindow.h"
+using namespace std;
+using namespace System;
+using namespace System::Windows::Forms;
 
 int main()
 {
+	Application::EnableVisualStyles();
+	Application::SetCompatibleTextRenderingDefault(false);
 	//TODO: Replace this with the actual data structure
 	ComputerTree<Computer> *testerino = new ComputerTree<Computer>();
 	char* header = new char[250];				//Will hold the header
@@ -28,14 +33,17 @@ int main()
 	//cin.getline(header, 250);
 
 	//Set the name for the input file name
-	inputFileName = "TestList.csv";
+	inputFileName = "SP18 Computer List.csv";
 
 	//Create input file object
 	fstream inputFile(inputFileName);
 
+	std::getline(inputFile, computerInfo);
+
 	//Open the file and pull information
 	if (inputFile.is_open())
 	{
+
 		// Read while its not the end of the file
 		while (!inputFile.eof())
 		{
@@ -44,7 +52,7 @@ int main()
 			std::getline(inputFile, computerInfo);
 
 			/* This part of the program will take the line aquired from the CSV file (computer info)
-			 * and split it accordingly to extract the comptuer name, ip address, and mac. */
+			* and split it accordingly to extract the comptuer name, ip address, and mac. */
 
 			//To extract the computer name we start create a substring starting at index 0 an going all the way to the first comma
 			string computerName = computerInfo.substr(0, computerInfo.find(",", 0));
@@ -56,10 +64,15 @@ int main()
 			//Finally, the mac address will start at the index after the second comma, and will be of length 17
 			string macAddress = computerInfo.substr(computerInfo.find(",", 17) + 1, 17);
 
+			size_t found = computerInfo.find_last_of(',');
+			string college = computerInfo.substr(found + 1, computerInfo.length());
+
 			//Here we create the computer objects and parse the information for the constructor
 			//Once the objec is in place, we add it to the tree
-			Computer* temp = new Computer((computerName), (ipAddress), (macAddress));
+			Computer* temp = new Computer((computerName), (ipAddress), (macAddress), (college));
 			testerino->insert(temp);
+			inputFile.peek();
+			
 		}
 	}
 	else
@@ -68,10 +81,12 @@ int main()
 	}
 
 	//Displays tree
-	testerino->inOrderDisplay();
+	cout << "************************************************************" << endl;
+	//testerino->inOrderDisplay();
 
 	//This will let you see whats going on
-	system("PAUSE");
-
+	//system("PAUSE");
+	RDToolGUI::MainWindow form(testerino);
+	Application::Run(%form);
 	return 0;
 }
