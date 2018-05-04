@@ -82,10 +82,12 @@ inline void ComputerTree<DT>::insert(DT* computer)
 		_left = new ComputerTree<DT>();
 		_right = new ComputerTree<DT>();
 		
-	}else if ((*computer) < (*_info))
+	}
+	else if ((*computer) < (*_info))
 	{
 		(*_left).insert(computer);
-	}else if ((*computer) > (*_info))
+	}
+	else if ((*computer) > (*_info))
 	{
 		(*_right).insert(computer);
 	}

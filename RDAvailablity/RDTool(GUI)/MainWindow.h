@@ -17,7 +17,7 @@ namespace RDToolGUI {
 	/// </summary>
 	public ref class MainWindow : public System::Windows::Forms::Form
 	{
-	private: System::Windows::Forms::TreeView^  computerTree;
+
 	public:
 		MainWindow(ComputerTree<Computer>* tree)
 		{
@@ -38,7 +38,9 @@ namespace RDToolGUI {
 				delete components;
 			}
 		}
-	
+	private: System::Windows::Forms::TreeView^  computerTree;
+	protected:
+
 	protected:
 
 	protected:

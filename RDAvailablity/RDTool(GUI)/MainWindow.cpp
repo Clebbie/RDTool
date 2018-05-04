@@ -15,7 +15,7 @@ void RDToolGUI::MainWindow::populateViewTree(ComputerTree<Computer>* tree, Syste
 	if (tree->getInfo() != nullptr)
 	{
 		cout << "Getting the computer..." << endl;
-		cout << *currentComputer << endl;
+	
 		currentComputer = tree->getInfo();
 		//check to see if the computer's college is the same...
 		if (currentComputer->getCollege() != currentCollege)
@@ -24,8 +24,8 @@ void RDToolGUI::MainWindow::populateViewTree(ComputerTree<Computer>* tree, Syste
 			System::String^ test = gcnew String(currentCollege.c_str());
 
 			System::Windows::Forms::TreeNode^  newCollege = (gcnew System::Windows::Forms::TreeNode(test));
-			view->Nodes->AddRange(gcnew cli::array< System::Windows::Forms::TreeNode^  >(10) { newCollege });
-			cout << "You made it here!";
+			view->Nodes->AddRange(gcnew cli::array< System::Windows::Forms::TreeNode^  >(1) { newCollege });
+			//cout << "You made it here!";
 			//view->Nodes->Add(newCollege, newCollege);
 		}
 		//check to see if the computer's lab is the same..
