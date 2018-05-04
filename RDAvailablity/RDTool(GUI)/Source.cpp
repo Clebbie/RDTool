@@ -1,0 +1,9 @@
+#include "MyForm.h"
+
+
+
+int main()
+{
+
+	return 0;
+}
