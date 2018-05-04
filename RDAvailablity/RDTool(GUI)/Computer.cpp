@@ -301,7 +301,7 @@ ostream & operator<<( ostream & os,   Computer & comp)
 {
 	int compStatus = comp.getStatus();
 	string* foo = comp.getUser();
-	os << "Computer: " << comp.getName() << "\nIP: " << comp.getIP() << "\nMac: " << comp.getMac() << "\n";
+	os << "Computer: " << comp.getName() << "\nIP: " << comp.getIP() << "\nMac: " << comp.getMac() << "\n" << comp.getLab() << "\n"<< comp.getCollege()<<"\n";
 	if (compStatus == 1) 
 	{
 		os << "In use by: " << (*foo) << endl;

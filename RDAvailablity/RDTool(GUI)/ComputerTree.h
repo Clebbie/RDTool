@@ -19,8 +19,8 @@ public:
 	void insert(DT* computer);
 	void remove(DT* computer);
 	ComputerTree<DT>& find(DT* computer);
-	ComputerTree<DT>& getLeft();
-	ComputerTree<DT>& getRight();
+	ComputerTree<DT>* getLeft();
+	ComputerTree<DT>* getRight();
 	ComputerTree<DT>& getMax();
 	ComputerTree<DT>& getMin();
 	string* getCollegeAndLab();
@@ -169,15 +169,15 @@ inline ComputerTree<DT>& ComputerTree<DT>::find(DT * computer)
 }
 
 template<class DT>
-inline ComputerTree<DT>& ComputerTree<DT>::getLeft()
+inline ComputerTree<DT>* ComputerTree<DT>::getLeft()
 {
-	return (*_left);
+	return (_left);
 }
 
 template<class DT>
-inline ComputerTree<DT>& ComputerTree<DT>::getRight()
+inline ComputerTree<DT>* ComputerTree<DT>::getRight()
 {
-	return (*_right);
+	return (_right);
 }
 
 template<class DT>

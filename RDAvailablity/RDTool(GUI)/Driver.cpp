@@ -1,13 +1,14 @@
 #include"Computer.h"
 #include"ComputerTree.h"
-#include"MyForm.h"
+#include"MainWindow.h"
 #include <iostream>
 using namespace System;
 using namespace System::Windows::Forms;
 
 
-[STAThreadAttribute]
-int main(cli::array<String^>^args) 
+//[STAThreadAttribute]
+//cli::array<String^>^args
+int main() 
 {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
@@ -16,7 +17,7 @@ int main(cli::array<String^>^args)
 	//TODO: Replace this with the actual data structure
 	ComputerTree<Computer> *testerino = new ComputerTree<Computer>();
 	char* header = new char[250];				//Will hold the header
-	string computerInfo;			//Will hold each line of the file
+	string computerInfo;						//Will hold each line of the file
 	char* computerName = new char[100];			//Holds the Comp name as a cstring
 	char* computerIP = new char[100];			//^^ IP
 	char* computerMac = new char[100];			//^^ Mac
@@ -124,7 +125,7 @@ int main(cli::array<String^>^args)
 		//Check if eof
 		cin.peek();
 	}
-	RDToolGUI::MyForm form(*testerino);
+	RDToolGUI::MainWindow form(testerino);
 	Application::Run(%form);
 	//testerino->inOrderDisplay();
 	return 0;
