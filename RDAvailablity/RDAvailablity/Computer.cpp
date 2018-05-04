@@ -12,12 +12,15 @@ Computer::Computer()
 	_selected = false;
 }
 
-Computer::Computer(string name,string ip,string mac)
+Computer::Computer(string name, string ip, string mac, string college)
 {
 	_name = name;
 	_user = string();
 	_ip = ip;
 	_mac = mac;
+	_college = college;
+	size_t found = _name.find_last_of('-');
+	_lab = _name.substr(0, found);
 	_status = Computer::Unknown;
 	_selected = false;
 }
@@ -35,7 +38,7 @@ Computer::Computer(const Computer & comp)
 
 Computer::~Computer()
 {
-
+	//TODO: Finish writing this
 }
 
 void Computer::setName(string name)
@@ -46,7 +49,7 @@ void Computer::setName(string name)
 
 void Computer::setUser(char* user)
 {
-	
+
 	_user = string(user);
 }
 
@@ -84,16 +87,16 @@ string Computer::getIP()
 char* Computer::deepCopy(string cString)
 {
 	int arrayLength = 0;
-	
+
 	for (arrayLength; cString[arrayLength] != '\0'; arrayLength++)
 	{
 
 	}
 	arrayLength++;
 	char* out = new char[arrayLength];
-	for (int i = 0;i < arrayLength; i++)
+	for (int i = 0; i < arrayLength; i++)
 	{
-		if (i == arrayLength - 1) 
+		if (i == arrayLength - 1)
 		{
 			out[i] = '\0';
 		}
@@ -115,7 +118,7 @@ void Computer::checkUser()
 	int count = 0;
 	int index = 0;
 	char* out = new char[16];
-	
+
 	//While there is stuff to get, get it
 	while (fgets(number, 100, f) != NULL)
 	{
@@ -126,7 +129,7 @@ void Computer::checkUser()
 		}
 		count++;
 		//Check to see if there is a user, by looking for the S in SOONER\4x4
-		if (number[0] == 'S' )
+		if (number[0] == 'S')
 		{
 			int j = 0;
 			for (int i = 0; i < 15; i++)
@@ -188,6 +191,16 @@ void Computer::writeCommand(string command)
 void Computer::display()
 {
 	cout << (*this) << endl;
+}
+
+string Computer::getLab()
+{
+	return _lab;
+}
+
+string Computer::getCollege()
+{
+	return _college;
 }
 
 bool Computer::operator<(Computer & comp)
@@ -279,17 +292,17 @@ void Computer::setSelection(bool selection)
 
 int Computer::turnOn()
 {
-	string command = "start powershell.exe -noexit -file \"\\\\norfile\\ls-repo\\Repository\\Learning Spaces\\Sysadmin Tools\\Magic Packet\\wol2.ps1\" " + _mac + "-Verb RunAs" ;
+	string command = "start powershell.exe -noexit -file \"\\\\norfile\\ls-repo\\Repository\\Learning Spaces\\Sysadmin Tools\\Magic Packet\\wol2.ps1\" " + _mac + "-Verb RunAs";
 	FILE *f = _popen(command.c_str(), "r");
 	return 0;
 }
 
-ostream & operator<<( ostream & os,   Computer & comp)
+ostream & operator<<(ostream & os, Computer & comp)
 {
 	int compStatus = comp.getStatus();
 	string* foo = comp.getUser();
-	os << "Computer: " << comp.getName() << "\nIP: " << comp.getIP() << "\nMac: " << comp.getMac() << "\n";
-	if (compStatus == 1) 
+	os << "Computer: " << comp.getName() << "\nIP: " << comp.getIP() << "\nMac: " << comp.getMac() << "\n" << comp.getLab() << "\n" << comp.getCollege() << "\n";
+	if (compStatus == 1)
 	{
 		os << "In use by: " << (*foo) << endl;
 	}

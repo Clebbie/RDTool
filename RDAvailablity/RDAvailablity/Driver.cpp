@@ -28,7 +28,7 @@ int main()
 	//cin.getline(header, 250);
 
 	//Set the name for the input file name
-	inputFileName = "TestList.csv";
+	inputFileName = "SP18 Computer List.csv";
 
 	//Create input file object
 	fstream inputFile(inputFileName);
@@ -56,9 +56,13 @@ int main()
 			//Finally, the mac address will start at the index after the second comma, and will be of length 17
 			string macAddress = computerInfo.substr(computerInfo.find(",", 17) + 1, 17);
 
+			size_t found = computerInfo.find_last_of(',');
+			string college = computerInfo.substr(found + 1,computerInfo.length());
+			cout << college << endl;
+
 			//Here we create the computer objects and parse the information for the constructor
 			//Once the objec is in place, we add it to the tree
-			Computer* temp = new Computer((computerName), (ipAddress), (macAddress));
+			Computer* temp = new Computer((computerName), (ipAddress), (macAddress),(college));
 			testerino->insert(temp);
 		}
 	}

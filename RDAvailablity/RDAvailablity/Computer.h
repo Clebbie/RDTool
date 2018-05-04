@@ -4,12 +4,14 @@
 using namespace std;
 
 
-class Computer 
+class Computer
 {
 public:
 	enum Status { Available = 0, InUse = 1, Unknown = 2, };
 protected:
 	string _name;
+	string _lab;
+	string _college;
 	string _user;
 	Status _status;
 	string _mac;
@@ -18,7 +20,7 @@ protected:
 
 public:
 	Computer();
-	Computer(string name,string ip,string mac);
+	Computer(string name, string ip, string mac, string college);
 	Computer(const Computer& comp);
 	~Computer();
 
@@ -37,7 +39,7 @@ public:
 	void setMac(string& mac);
 	void setIP(string& ip);
 	void setSelection(bool selection);
-	
+
 	//Four main functions
 	int turnOn();
 	void remoteDesktop();
@@ -48,6 +50,8 @@ public:
 	char* deepCopy(string cString);
 	void checkUser();
 	void display();
+	string getLab();
+	string getCollege();
 
 	bool operator <(Computer& comp);
 	bool operator >(Computer& comp);
@@ -55,14 +59,10 @@ public:
 	bool operator <=(Computer& comp);
 	bool operator==(Computer& comp);
 	void operator=(const Computer& comp);
-	
-	
-	friend ostream& operator<< (  ostream& os,  Computer& comp);
-	
-	
+
+
+	friend ostream& operator<< (ostream& os, Computer& comp);
+
+
 
 };
-
-
-
-
