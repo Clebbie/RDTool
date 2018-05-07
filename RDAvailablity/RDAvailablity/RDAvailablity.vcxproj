@@ -114,19 +114,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Computer.cpp" />
-    <ClCompile Include="ComputerTree.cpp" />
-    <ClCompile Include="Driver.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Computer.h" />
-    <ClInclude Include="ComputerTree.h" />
-    <ClInclude Include="DataFrame.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="\\norfile\ls-repo\Repository\Learning Spaces\Sysadmin Tools\Magic Packet\wol2.ps1" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
