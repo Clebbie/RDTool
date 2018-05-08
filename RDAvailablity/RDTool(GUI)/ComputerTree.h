@@ -1,6 +1,5 @@
 #pragma once
 #include<string>
-using namespace std;
 
 template <class DT>
 class ComputerTree
@@ -18,12 +17,11 @@ public:
 	void setInfo(DT* info);
 	void insert(DT* computer);
 	void remove(DT* computer);
-	ComputerTree<DT>& find(DT* computer);
+	ComputerTree<DT>* find(string name);
 	ComputerTree<DT>* getLeft();
 	ComputerTree<DT>* getRight();
 	ComputerTree<DT>& getMax();
 	ComputerTree<DT>& getMin();
-	string* getCollegeAndLab();
 	void checkStatus();
 	void balance();
 	int height();
@@ -81,7 +79,7 @@ inline void ComputerTree<DT>::insert(DT* computer)
 		_info = computer;
 		_left = new ComputerTree<DT>();
 		_right = new ComputerTree<DT>();
-		
+
 	}
 	else if ((*computer) < (*_info))
 	{
@@ -98,7 +96,7 @@ inline void ComputerTree<DT>::insert(DT* computer)
 template<class DT>
 inline void ComputerTree<DT>::remove(DT * computer)
 {
-	ComputerTree<DT>* temp = &(find(computer));
+	ComputerTree<DT>* temp = find(computer->getName());
 	// case 2 one child
 	if ((*temp)._left->_info == nullptr)
 	{
@@ -106,10 +104,10 @@ inline void ComputerTree<DT>::remove(DT * computer)
 		if ((*temp)._right->_info != nullptr)
 		{
 			ComputerTree<DT> min = (*temp)._right->getMin();
-			(*temp)._info = nullptr;
+			//(*temp)._info = nullptr;
 			//delete (*temp)._info;
 			(*temp)._info = min._info;
-			(*temp)._right->remove((*temp)._info);
+			(*temp)._right->remove((min)._info);
 		}
 		// No child
 		else
@@ -126,30 +124,30 @@ inline void ComputerTree<DT>::remove(DT * computer)
 		//Case 3 two children
 		if ((*temp)._right->_info != nullptr)
 		{
-			(*temp)._info = nullptr;
-			delete (*temp)._info;
+			//(*temp)._info = nullptr;
+			//delete (*temp)._info;
 			(*temp)._info = max._info;
-			(*temp)._left->remove((*temp)._info);
+			(*temp)._left->remove((max)._info);
 		}
 		// One child
 		else
 		{
-			(*temp)._info = nullptr;
-			delete (*temp)._info;
+			//(*temp)._info = nullptr;
+			//delete (*temp)._info;
 			(*temp)._info = max._info;
-			(*temp)._left->remove((*temp)._info);
+			(*temp)._left->remove((max)._info);
 		}
 	}
 }
 
 template<class DT>
-inline ComputerTree<DT>& ComputerTree<DT>::find(DT * computer)
+inline ComputerTree<DT>* ComputerTree<DT>::find(string name)
 {
-	if ((*_info) == (*computer))
+	if (_info->getName() == (name))
 	{
-	return *this;
+		return this;
 	}
-	else if (_left == nullptr &&_right == nullptr)
+	else if (_left == nullptr && _right == nullptr)
 	{
 		if (_info == nullptr)
 		{
@@ -157,16 +155,16 @@ inline ComputerTree<DT>& ComputerTree<DT>::find(DT * computer)
 		}
 		else
 		{
-			*this;
+			this;
 		}
 	}
-	if ((*_info) <= (*computer))
+	if ((*_info).getName() <= name)
 	{
-	return (*_left).find(computer);
+		return (*_right).find(name);
 	}
-	if ((*_info) >= (*computer))
+	if ((*_info).getName() >= (name))
 	{
-	return (*_left).find(computer);
+		return (*_left).find(name);
 	}
 }
 
@@ -186,7 +184,7 @@ template<class DT>
 inline ComputerTree<DT>& ComputerTree<DT>::getMax()
 {
 	// Used in balance
-	if (_right != nullptr)
+	if ((*_right)._info != nullptr)
 	{
 		return (*_right).getMax();
 	}
@@ -200,7 +198,7 @@ template<class DT>
 inline ComputerTree<DT>& ComputerTree<DT>::getMin()
 {
 	// Used in balance
-	if (_left != nullptr)
+	if ((*_left)._info != nullptr)
 	{
 		return (*_left).getMin();
 	}
@@ -208,19 +206,6 @@ inline ComputerTree<DT>& ComputerTree<DT>::getMin()
 	{
 		return (*this);
 	}
-}
-
-template<class DT>
-inline string* ComputerTree<DT>::getCollegeAndLab()
-{
-	//Intialize the hieights to 0
-	string* out = "";
-	if (_info != nullptr)
-	{
-		//Get left and right heights
-		(*out) = (*_info).getCollege() + "/" + (*_info).getLab();
-	}
-	return out;
 }
 
 template<class DT>
@@ -245,7 +230,7 @@ template<class DT>
 inline void ComputerTree<DT>::balance()
 {
 	int balanceFactor;
-	
+
 	//Go down left of the tree and balance
 	if (_left != nullptr)
 	{
@@ -253,7 +238,7 @@ inline void ComputerTree<DT>::balance()
 	}
 	//balance this tree
 	if (_info != nullptr)
-	{		
+	{
 		balanceFactor = (*_left).height() - (*_right).height();
 
 		if (balanceFactor < -1)
@@ -270,7 +255,7 @@ inline void ComputerTree<DT>::balance()
 	{
 		_right->balance();
 	}
-	
+
 
 }
 
@@ -308,7 +293,7 @@ inline void ComputerTree<DT>::zig()
 	//Creating the temp tree and copying the right to the right of the temp tree...
 	ComputerTree<DT>* T = new ComputerTree<DT>();
 	(*T)._right = _right;
-	
+
 	//Copying the left right leaf over to the temp tree and replacing the left right with a new pointer...
 	(*T)._left = (*_left)._right;
 
@@ -320,7 +305,7 @@ inline void ComputerTree<DT>::zig()
 	_left = (*_left)._left;
 
 	//Copying temp tree over to the right...
-	_right =  T;
+	_right = T;
 }
 
 template<class DT>
@@ -389,7 +374,7 @@ inline void ComputerTree<DT>::operator=(const ComputerTree<DT>& compTree)
 {
 	DT* temp = compTree._info;
 	_info = new DT(*temp);
-	
+
 	_left = compTree._left;
 	_right = compTree._right;
 }

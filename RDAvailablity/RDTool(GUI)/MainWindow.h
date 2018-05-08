@@ -1,6 +1,7 @@
 #pragma once
 #include"Computer.h"
 #include"ComputerTree.h"
+#include <msclr\marshal_cppstd.h>
 
 
 namespace RDToolGUI {
@@ -21,10 +22,11 @@ namespace RDToolGUI {
 	public:
 		MainWindow(ComputerTree<Computer>* tree)
 		{
+			_tree = tree;
+			selectedTree = new ComputerTree<Computer>();
 			InitializeComponent();
 			populateViewTree(tree,computerTree);
-			
-			computerTree->Update();
+			//computerTree->Update();
 		}
 
 	protected:
@@ -39,6 +41,7 @@ namespace RDToolGUI {
 			}
 		}
 	private: System::Windows::Forms::TreeView^  computerTree;
+			 ComputerTree<Computer>* _tree;
 	protected:
 
 	protected:
@@ -64,12 +67,14 @@ namespace RDToolGUI {
 			// computerTree
 			// 
 			this->computerTree->CheckBoxes = true;
+			//this->computerTree->FullRowSelect = true;
 			this->computerTree->Location = System::Drawing::Point(2, -1);
 			this->computerTree->Name = L"computerTree";
-			this->computerTree->Size = System::Drawing::Size(164, 749);
+			this->computerTree->ShowNodeToolTips = true;
+			this->computerTree->Size = System::Drawing::Size(195, 749);
 			this->computerTree->TabIndex = 0;
-			this->computerTree->AfterSelect += gcnew System::Windows::Forms::TreeViewEventHandler(this, &MainWindow::computerTree_AfterSelect);
-			// 
+			//this->computerTree->AfterSelect += gcnew System::Windows::Forms::TreeViewEventHandler(this, &MainWindow::computerTree_AfterSelect);
+			computerTree->AfterCheck += gcnew TreeViewEventHandler(this, &MainWindow::computerTree_AfterSelect);
 			// MainWindow
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -83,7 +88,90 @@ namespace RDToolGUI {
 		}
 #pragma endregion
 		void populateViewTree(ComputerTree<Computer>* tree, System::Windows::Forms::TreeView ^ view);
+		ComputerTree<Computer>* selectedTree;
 	private: System::Void computerTree_AfterSelect(System::Object^  sender, System::Windows::Forms::TreeViewEventArgs^  e) {
+		//College level selected
+		if (e->Node->Level == 0)
+		{
+			if (e->Node->Checked)
+			{
+				//Expand all children
+				e->Node->ExpandAll();
+				
+				int size = e->Node->GetNodeCount(false);
+				for (int i = 0; i < size; i++)
+				{
+					if (!e->Node->Nodes[i]->Checked)
+					{
+						//Select every child of the node and set to true
+						e->Node->Nodes[i]->Checked = true;
+					}
+				}
+			}
+			else
+			{
+
+				int size = e->Node->GetNodeCount(false);
+				e->Node->Collapse();
+				for (int i = 0; i < size; i++)
+				{
+					if (e->Node->Nodes[i]->Checked)
+					{
+						e->Node->Nodes[i]->Checked = false;
+					}
+				}
+			}
+		}
+		//Lab level selected
+		else if (e->Node->Level == 1)
+		{
+			if (e->Node->Checked)
+			{
+				int size = e->Node->GetNodeCount(false);
+				e->Node->ExpandAll();
+				for (int i = 0; i < size; i++)
+				{
+					if (!e->Node->Nodes[i]->Checked)
+					{
+						e->Node->Nodes[i]->Checked = true;
+					}
+				}
+			}
+			else
+			{
+				int size = e->Node->GetNodeCount(false);
+				e->Node->Collapse();
+				e->Node->ExpandAll();
+				for (int i = 0; i < size; i++)
+				{
+					if (e->Node->Nodes[i]->Checked)
+					{
+						e->Node->Nodes[i]->Checked = false;
+						//TODO: find the computer in the selectedTree and remove it!
+					}
+				}
+			}
+			cout << (*selectedTree) << endl;
+		}
+		//Last level is selected
+		else
+		{
+			if (e->Node->Checked)
+			{
+				//TODO: Find the computer in the _tree and add it to the selectedTree
+				string name = msclr::interop::marshal_as<std::string>(e->Node->Name);
+				ComputerTree<Computer>*temp = _tree->find(name);
+				selectedTree->insert(temp->getInfo());
+
+			}
+			else
+			{
+				//TODO: find the computer in the selectedTree and remove it!
+				string name = msclr::interop::marshal_as<std::string>(e->Node->Name);
+				ComputerTree<Computer>*temp = _tree->find(name);
+				selectedTree->remove(temp->getInfo());
+			}
+		}
 	}
 	};
 }
