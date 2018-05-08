@@ -39,6 +39,7 @@ Computer::Computer(const Computer & comp)
 Computer::~Computer()
 {
 	//TODO: Finish writing this
+
 }
 
 void Computer::setName(string name)

@@ -7,39 +7,49 @@ void RDToolGUI::MainWindow::populateViewTree(ComputerTree<Computer>* tree, Syste
 	string currentCollege = "";
 	string currentLab = "";
 	Computer* currentComputer;
-	//cout << "You made it here!";
+	String^ collegeKey;
+	String^ labKey;
+	String^ computerKey;
+	//Call on the left branch
 	if (tree->getLeft() != nullptr)
 	{
 		populateViewTree(tree->getLeft(), view);
 	}
+	//Make sure the _info is not empty
 	if (tree->getInfo() != nullptr)
 	{
-		cout << "Getting the computer..." << endl;
-	
+		//store the computer
 		currentComputer = tree->getInfo();
 		//check to see if the computer's college is the same...
 		if (currentComputer->getCollege() != currentCollege)
 		{
+			//Assign the local variables
 			currentCollege = currentComputer->getCollege();
-			System::String^ test = gcnew String(currentCollege.c_str());
-
-			System::Windows::Forms::TreeNode^  newCollege = (gcnew System::Windows::Forms::TreeNode(test));
-			view->Nodes->AddRange(gcnew cli::array< System::Windows::Forms::TreeNode^  >(1) { newCollege });
-			//cout << "You made it here!";
-			//view->Nodes->Add(newCollege, newCollege);
+			collegeKey = gcnew String(currentCollege.c_str());
+			//Check to see if the college already exisits
+			if (!view->Nodes->ContainsKey(collegeKey))
+			{
+				view->Nodes->Add(collegeKey,collegeKey);
+			}
 		}
 		//check to see if the computer's lab is the same..
 		if (currentComputer->getLab() != currentLab)
 		{
 			currentLab = currentComputer->getLab();
-			System::String^ lab = gcnew String(currentLab.c_str());
-			System::String^ college = gcnew String(currentCollege.c_str());
-
-			view->Nodes->ContainsKey(college);
-			//view->SelectedNode = view->Nodes->Find(college,false);
-
+			labKey = gcnew String(currentLab.c_str());
+			cli::array<TreeNode^>^ found = view->Nodes->Find(collegeKey, false);
+			if (!found[0]->Nodes->ContainsKey(labKey))
+			{
+				cli::array<TreeNode^>^ found = view->Nodes->Find(collegeKey, false);
+				found[0]->Nodes->Add(labKey, labKey);
+			}
 		}
 		//Add the computer
+		computerKey = gcnew String(currentComputer->getName().c_str());
+		cli::array<TreeNode^>^ found = view->Nodes->Find(collegeKey, false);
+		
+		cli::array<TreeNode^>^ found2 = found[0]->Nodes->Find(labKey, false);
+		found2[0]->Nodes->Add(computerKey, computerKey);
 	}
 	if (tree->getRight() != nullptr)
 	{
