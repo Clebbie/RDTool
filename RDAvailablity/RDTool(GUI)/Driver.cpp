@@ -9,6 +9,8 @@ using namespace std;
 using namespace System;
 using namespace System::Windows::Forms;
 
+
+
 int main()
 {
 	Application::EnableVisualStyles();
@@ -28,6 +30,7 @@ int main()
 	string* name = nullptr;
 	string* ip = nullptr;
 	string* mac = nullptr;
+
 
 	//TODO: Uncomment this when using on the actual thing
 	//cin.getline(header, 250);
