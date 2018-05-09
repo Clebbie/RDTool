@@ -57,3 +57,13 @@ void RDToolGUI::MainWindow::populateViewTree(ComputerTree<Computer>* tree, Syste
 	}
 	
 }
+
+//void RDToolGUI::MainWindow::createPanel(String ^ name, String ^ status, FlowLayoutPanel^ display)
+//{
+//	throw gcnew System::NotImplementedException();
+//	// TODO: insert return statement here
+//	//Panel^ out = gcnew Panel();
+//	//out->Name = name;
+//
+//	
+//}

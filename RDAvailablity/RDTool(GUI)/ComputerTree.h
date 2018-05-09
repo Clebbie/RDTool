@@ -1,5 +1,8 @@
 #pragma once
 #include<string>
+#include<fstream>
+#include<iomanip>
+#include<iostream>
 
 template <class DT>
 class ComputerTree
@@ -29,7 +32,10 @@ public:
 	void zig();
 	void zag();
 	void inOrderDisplay();
+	void writeFile(ofstream& outputFile);
 	void preOrderDisplay();
+	void documentTreeTraversal(ofstream& outputFile);
+	void generateReport();
 	void operator=(const ComputerTree<DT>& compTree);
 	template<class DT>
 	friend ostream& operator<<(ostream& os, const ComputerTree<DT>& comp);
@@ -54,9 +60,11 @@ inline ComputerTree<DT>::ComputerTree(DT* computer)
 template<class DT>
 inline ComputerTree<DT>::~ComputerTree()
 {
-	delete _info;
+	_left = nullptr;
 	delete _left;
+	_right = nullptr;
 	delete _right;
+	_info = nullptr;
 }
 
 template<class DT>
@@ -114,6 +122,8 @@ inline void ComputerTree<DT>::remove(DT * computer)
 		{
 			delete (*temp)._left;
 			delete (*temp)._right;
+			(*temp)._left = nullptr;
+			(*temp)._right = nullptr;
 			(*temp)._info = nullptr;
 			//delete (*temp)._info;
 		}
@@ -288,6 +298,15 @@ inline void ComputerTree<DT>::display()
 }
 
 template<class DT>
+inline void ComputerTree<DT>::writeFile(ofstream& outputFile)
+{
+	//outputFile << (*this) << endl;
+	outputFile << (*_info).getName() << "," << (*_info).getIP() << "," << (*_info).getMac() << endl;
+	cout << "Writing computer: " << (*_info).getName() << endl;
+
+}
+
+template<class DT>
 inline void ComputerTree<DT>::zig()
 {
 	//Creating the temp tree and copying the right to the right of the temp tree...
@@ -367,6 +386,49 @@ inline void ComputerTree<DT>::preOrderDisplay()
 		_right->preOrderDisplay();
 		cout << endl;
 	}
+}
+
+template<class DT>
+inline void ComputerTree<DT>::documentTreeTraversal(ofstream& outputFile)
+{
+	if ((*_left)._info != nullptr)
+	{
+		_left->documentTreeTraversal(outputFile);
+	}
+	if (_info != nullptr)
+	{
+		//_info->writeFile(outputFile);
+		writeFile(outputFile);
+	}
+	if ((*_right)._info != nullptr)
+	{
+		_right->documentTreeTraversal(outputFile);
+	}
+}
+
+template<class DT>
+inline void ComputerTree<DT>::generateReport() 
+{
+	//Name the output file
+	string outputFileName = "RDTool Report.csv";
+
+	//Create the file output object
+	ofstream outputFile(outputFileName);
+
+	if(outputFile.is_open()) 
+	{
+		outputFile << "Computer Name, IP Address, MAC Address" << endl;
+
+		documentTreeTraversal(outputFile);
+
+		outputFile.close();
+	}
+	else
+	{
+		cout << "File not accessible" << endl;
+	}
+
+
 }
 
 template<class DT>

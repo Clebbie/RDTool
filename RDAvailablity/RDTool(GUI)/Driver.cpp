@@ -60,6 +60,8 @@ int main()
 			//To extract the computer name we start create a substring starting at index 0 an going all the way to the first comma
 			string computerName = computerInfo.substr(0, computerInfo.find(",", 0));
 
+			cout << "Loading computer: " << computerName << "..." << endl;
+
 			//To extract the ip address we start in the fist comma and add one to move the index off the comma
 			//then the length of the substring will be dictated by the length of charactares in-between the first and second comma
 			string ipAddress = computerInfo.substr(computerInfo.find(",", 0) + 1, computerInfo.find(",", 17) - (computerInfo.find(",", 0) + 1));
@@ -87,9 +89,13 @@ int main()
 	cout << "************************************************************" << endl;
 	//testerino->inOrderDisplay();
 
+	testerino->generateReport();
+	cout << endl;
+	cout << "Report has been generated" << endl;
+
 	//This will let you see whats going on
-	//system("PAUSE");
-	RDToolGUI::MainWindow form(testerino);
-	Application::Run(%form);
+	system("PAUSE");
+	//RDToolGUI::MainWindow form(testerino);
+	//Application::Run(%form);
 	return 0;
 }
