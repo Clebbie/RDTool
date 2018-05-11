@@ -1,15 +1,38 @@
+#pragma once
 #include"Computer.h"
 #include"ComputerTree.h"
 #include <iostream>
 #include <list>
 #include <fstream>
 #include <iomanip>
+#include <memory>
+#include <cstdio>
+#include <stdexcept>
+#include <string>
 #include"MainWindow.h"
 using namespace std;
 using namespace System;
 using namespace System::Windows::Forms;
 
-
+string exec(const char* cmd) {
+	char buffer[128];
+	string result = "";
+	FILE* pipe = _popen(cmd, "r");
+	if (!pipe) throw runtime_error("_popen() failed!");
+	try {
+		while (!feof(pipe)) {
+		//for(int i= 0; i < 6; i++){
+			if (fgets(buffer, 128, pipe) != NULL)
+				result += buffer;
+		}
+	}
+	catch (...) {
+		_pclose(pipe);
+		throw;
+	}
+	_pclose(pipe);
+	return result;
+}
 
 int main()
 {
@@ -87,6 +110,8 @@ int main()
 
 	//Displays tree
 	cout << "************************************************************" << endl;
+
+	/*
 	//testerino->inOrderDisplay();
 
 	testerino->generateReport();
@@ -97,5 +122,45 @@ int main()
 	system("PAUSE");
 	//RDToolGUI::MainWindow form(testerino);
 	//Application::Run(%form);
+
+	string computerName = "lab-sec360-03";
+	
+	string cmd = "wmic /node:\""; 
+	cmd = cmd + computerName;
+	cmd = cmd + "\" nicconfig get IPAddress";
+	*/
+
+	string compName = "lab-sec360-02";
+
+	string cmd = "wmic /node:\"" + compName + "\" nicconfig get IPAddress";
+
+
+	string resalt = exec(cmd.c_str());
+
+	cout << resalt << endl;
+
+	//Name the output file
+	string outputFileName = "RDTool Report.csv";
+
+	//Create the file output object
+	ofstream outputFile(outputFileName);
+
+	if (outputFile.is_open())
+	{
+		outputFile << resalt << endl;
+
+		outputFile.close();
+	}
+	else
+	{
+		cout << "File not accessible" << endl;
+	}
+
+
+	system("PAUSE");
+
+	
+
+	
 	return 0;
 }
