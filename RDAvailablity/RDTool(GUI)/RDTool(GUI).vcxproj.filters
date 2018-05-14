@@ -14,8 +14,6 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
-<<<<<<< HEAD:RDAvailablity/RDAvailablity/RDAvailablity.vcxproj.filters
-=======
   <ItemGroup>
     <ClCompile Include="Computer.cpp">
       <Filter>Source Files</Filter>
@@ -38,5 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
->>>>>>> 42ad3feb7e5890fd65fc103234b916d2947e8150:RDAvailablity/RDTool(GUI)/RDTool(GUI).vcxproj.filters
+  <ItemGroup>
+    <EmbeddedResource Include="MainWindow.resx">
+      <Filter>Resource Files</Filter>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

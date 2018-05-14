@@ -57,3 +57,86 @@ void RDToolGUI::MainWindow::populateViewTree(ComputerTree<Computer>* tree, Syste
 	}
 	
 }
+
+System::Windows::Forms::Panel^ RDToolGUI::MainWindow::createPanel(System::String ^ name, System::String ^ status, System::Windows::Forms::FlowLayoutPanel ^ display)
+{
+	/*throw gcnew System::NotImplementedException();*/
+	// 
+	// labelName
+	//
+	System::Windows::Forms::Label^ labelName = gcnew Label();
+
+	labelName->AutoSize = true;
+	labelName->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+		static_cast<System::Byte>(0)));
+	labelName->Location = System::Drawing::Point(3, 15);
+	labelName->Name = L"computerName";
+	labelName->Size = System::Drawing::Size(120, 22);
+	labelName->Text = name;
+	// 
+	// computerStatus
+	// 
+	System::Windows::Forms::Label^ computerStatus= gcnew Label();
+	computerStatus->AutoSize = true;
+	computerStatus->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+		static_cast<System::Byte>(0)));
+	computerStatus->Location = System::Drawing::Point(140, 15);
+	computerStatus->Name = L"computerStatus";
+	computerStatus->Size = System::Drawing::Size(120, 22);
+	computerStatus->Text = status;
+	// 
+	// labview button
+	// 
+	System::Windows::Forms::Button^ labViewButton = gcnew Button();
+	System::Windows::Forms::Button^ remoteButton = gcnew Button();
+	System::Windows::Forms::Button^ magicButton = gcnew Button();
+	labViewButton->Name = L"labView";
+	labViewButton->Location = System::Drawing::Point(3, 54);
+	labViewButton->Size = System::Drawing::Size(75, 23);
+	labViewButton->Text = L"Lab View";
+	labViewButton->UseVisualStyleBackColor = true;
+	// 
+	// remote desktop button
+	// 
+	remoteButton->Name = L"remoteDesktop";
+	remoteButton->Location = System::Drawing::Point(140, 54);
+	remoteButton->Size = System::Drawing::Size(75, 23);
+	remoteButton->Text = L"Remote Desktop";
+	remoteButton->UseVisualStyleBackColor = true;
+	// 
+	// magic packet button
+	// 
+	magicButton->Name = L"magic";
+	magicButton->Location = System::Drawing::Point(267, 54);
+	magicButton->Size = System::Drawing::Size(75, 23);
+	magicButton->Text = L"Magic Packets";
+	magicButton->UseVisualStyleBackColor = true;
+	
+	//Panel that will be returned
+	Panel^ pan = gcnew Panel();
+	//Setting properties of the pannel and adding information onto it
+	pan->Name = name;
+	pan->Size = System::Drawing::Size(350, 80);
+	pan->Controls->Add(labelName);
+	pan->Controls->Add(computerStatus);
+	pan->Controls->Add(labViewButton);
+	pan->Controls->Add(remoteButton);
+	pan->Controls->Add(magicButton);
+	pan->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
+	remoteButton->Parent = pan;
+	magicButton->Parent = pan;
+	labViewButton->Parent = pan;
+	//Setting the listners for the three buttons
+	remoteButton->Click += gcnew System::EventHandler(this, &MainWindow::remoteButton_Click);
+	labViewButton->Click += gcnew System::EventHandler(this, &MainWindow::labViewButton_Click);
+	magicButton->Click += gcnew System::EventHandler(this, &MainWindow::magicButton_Click);
+	display->Padding.All = 10;
+	return pan;
+
+	
+	
+}
+
+ 
+
+
