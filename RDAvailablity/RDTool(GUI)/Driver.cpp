@@ -9,21 +9,30 @@
 #include <cstdio>
 #include <stdexcept>
 #include <string>
+#include <sys/types.h>
+#include <windows.h>
 #include"MainWindow.h"
 using namespace std;
 using namespace System;
 using namespace System::Windows::Forms;
 
-string exec(const char* cmd) {
+string exec(const char* cmd) 
+{
 	char buffer[128];
 	string result = "";
+
+	//pid_t processKiller = fork();
+
 	FILE* pipe = _popen(cmd, "r");
 	if (!pipe) throw runtime_error("_popen() failed!");
-	try {
-		while (!feof(pipe)) {
-		//for(int i= 0; i < 6; i++){
+	try
+	{
+		while (!feof(pipe))
+		{
 			if (fgets(buffer, 128, pipe) != NULL)
+			{
 				result += buffer;
+			}
 		}
 	}
 	catch (...) {
@@ -31,6 +40,47 @@ string exec(const char* cmd) {
 		throw;
 	}
 	_pclose(pipe);
+	return result;
+}
+
+string command(const char* cmd)
+{
+	BOOL bSuccess;
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+	string result;
+
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	ZeroMemory(&pi, sizeof(pi));
+
+	bSuccess = CreateProcess(NULL,
+		(LPWSTR) cmd,
+		NULL,
+		NULL,
+		FALSE,
+		0,
+		NULL,
+		NULL,
+		&si,
+		&pi);
+	
+	WaitForSingleObject(pi.hProcess, 1000);
+
+	//Sleep(1000);
+
+	if (bSuccess == false)
+	{
+		result = exec(cmd);
+	}
+	else
+	{
+		result = "computer in error";
+	}
+
+	CloseHandle(pi.hProcess); 
+	CloseHandle(pi.hThread);
+
 	return result;
 }
 
@@ -130,14 +180,20 @@ int main()
 	cmd = cmd + "\" nicconfig get IPAddress";
 	*/
 
-	string compName = "lab-sec360-02";
+	string compName = "lab-sec360-01";
 
 	string cmd = "wmic /node:\"" + compName + "\" nicconfig get IPAddress";
 
 
-	string resalt = exec(cmd.c_str());
+	string rawResult = command(cmd.c_str());
 
-	cout << resalt << endl;
+	cout << "rawResult: " <<  rawResult << endl;
+
+	string result;
+
+	result = rawResult.substr(rawResult.find('{') + 2, 14);
+
+	cout << "Result: " <<  result << endl;
 
 	//Name the output file
 	string outputFileName = "RDTool Report.csv";
@@ -147,7 +203,7 @@ int main()
 
 	if (outputFile.is_open())
 	{
-		outputFile << resalt << endl;
+		outputFile << result << endl;
 
 		outputFile.close();
 	}
