@@ -202,14 +202,16 @@ namespace RDToolGUI
 		{
 			if (e->Node->Checked)
 			{
-				//TODO: Find the computer in the _tree and add it to the selectedTree
+				//This will add the computer selected from the viewTree and add it to the selected tree
 				string name = msclr::interop::marshal_as<std::string>(e->Node->Name);
 				ComputerTree<Computer>*temp = _tree->find(name);
 				selectedTree->insert(temp->getInfo());
 				String^ labelName = e->Node->Name;
 				String^ labelStatus;
+				
+				//This will set the label for the panel
+				temp->getInfo()->checkUser();
 				int status = temp->getInfo()->getStatus();
-
 				if (status == 1)
 				{
 					string foo = " In use by: ";
@@ -225,21 +227,24 @@ namespace RDToolGUI
 				{
 					labelStatus = L"Available";
 				}
+				//This creates the panel then checks the user of the panel;
 				Panel^ test = createPanel(labelName, labelStatus, computerDisplay);
-				temp->getInfo()->checkUser();
 				if (status == 1)
 				{
-					test->BackColor = test->BackColor.LightYellow;
+					//Set color to yellow
+					test->BackColor = test->BackColor.Yellow;
 				}
 				else if (status == 2)
 				{
+					//Set color to red
 					test->BackColor = test->BackColor.IndianRed;
-					
 				}
 				else
 				{
-					test->BackColor = test->BackColor.Green;
+					//Set color to Green
+					test->BackColor = test->BackColor.LawnGreen;
 				}
+				//Adds the panel to the display
 				computerDisplay->Controls->Add(test);
 				
 				
@@ -247,6 +252,7 @@ namespace RDToolGUI
 			}
 			else
 			{
+				//This will remove the panel and computer from the tree
 				string name = msclr::interop::marshal_as<std::string>(e->Node->Name);
 				ComputerTree<Computer>*temp = _tree->find(name);
 				String^ labelName = e->Node->Name;
@@ -257,31 +263,34 @@ namespace RDToolGUI
 			}
 		}
 	}
-	//private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
-	//	//string name = msclr::interop::marshal_as<std::string>(this->Parent->Name);
-	//	
-	//	string name = msclr::interop::marshal_as<std::string>(button2->Parent->Name->ToString());
-	//	cout << name << endl;
-	//	
-	//}
+	//This is the event listener for the remote button
 	public: System::Void remoteButton_Click(System::Object^  sender, System::EventArgs^  e)
 	{
+		//creates the button from the sender
 		Button^ ctrl = safe_cast<Button^>(sender);
 		
+		//Gets the panel name (Which is the name of the computer) then calls remote desktop on it
 		string name = msclr::interop::marshal_as<std::string>(ctrl->Parent->Name->ToString());
 		selectedTree->find(name)->getInfo()->remoteDesktop();
 	}
+	//This is the event listener for the lab view button
 	public: System::Void labViewButton_Click(System::Object^ sender, System::EventArgs^ e)
 	{
+		//creates the button from the sender
 		Button^ ctrl = safe_cast<Button^>(sender);
 
+		//Gets the panel name (which is the name of the computer) and calls lab view on it
 		string name = msclr::interop::marshal_as<std::string>(ctrl->Parent->Name->ToString());
 		selectedTree->find(name)->getInfo()->labView();
 	}
+	//This is the event listener for the magic packets butt
+	//TODO: Need to test this
 	public: System::Void magicButton_Click(System::Object^ sender, System::EventArgs^ e)
 	{
+		//creates the button from the sender
 		Button^ ctrl = safe_cast<Button^>(sender);
 
+		//Gets the panel name(which is the name of the computer) and calls the magic packts on it
 		string name = msclr::interop::marshal_as<std::string>(ctrl->Parent->Name->ToString());
 		selectedTree->find(name)->getInfo()->turnOn();
 	}

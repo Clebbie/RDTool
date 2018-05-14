@@ -85,7 +85,7 @@ System::Windows::Forms::Panel^ RDToolGUI::MainWindow::createPanel(System::String
 	computerStatus->Size = System::Drawing::Size(120, 22);
 	computerStatus->Text = status;
 	// 
-	// button3
+	// labview button
 	// 
 	System::Windows::Forms::Button^ labViewButton = gcnew Button();
 	System::Windows::Forms::Button^ remoteButton = gcnew Button();
@@ -96,17 +96,15 @@ System::Windows::Forms::Panel^ RDToolGUI::MainWindow::createPanel(System::String
 	labViewButton->Text = L"Lab View";
 	labViewButton->UseVisualStyleBackColor = true;
 	// 
-	// button2
+	// remote desktop button
 	// 
-	
 	remoteButton->Name = L"remoteDesktop";
 	remoteButton->Location = System::Drawing::Point(140, 54);
 	remoteButton->Size = System::Drawing::Size(75, 23);
 	remoteButton->Text = L"Remote Desktop";
 	remoteButton->UseVisualStyleBackColor = true;
-	
 	// 
-	// button1
+	// magic packet button
 	// 
 	magicButton->Name = L"magic";
 	magicButton->Location = System::Drawing::Point(267, 54);
@@ -114,9 +112,9 @@ System::Windows::Forms::Panel^ RDToolGUI::MainWindow::createPanel(System::String
 	magicButton->Text = L"Magic Packets";
 	magicButton->UseVisualStyleBackColor = true;
 	
-
+	//Panel that will be returned
 	Panel^ pan = gcnew Panel();
-
+	//Setting properties of the pannel and adding information onto it
 	pan->Name = name;
 	pan->Size = System::Drawing::Size(350, 80);
 	pan->Controls->Add(labelName);
@@ -128,7 +126,7 @@ System::Windows::Forms::Panel^ RDToolGUI::MainWindow::createPanel(System::String
 	remoteButton->Parent = pan;
 	magicButton->Parent = pan;
 	labViewButton->Parent = pan;
-	
+	//Setting the listners for the three buttons
 	remoteButton->Click += gcnew System::EventHandler(this, &MainWindow::remoteButton_Click);
 	labViewButton->Click += gcnew System::EventHandler(this, &MainWindow::labViewButton_Click);
 	magicButton->Click += gcnew System::EventHandler(this, &MainWindow::magicButton_Click);
