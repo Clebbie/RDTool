@@ -11,6 +11,8 @@
 #include <string>
 #include <sys/types.h>
 #include <windows.h>
+#include <locale>
+#include <codecvt>
 #include"MainWindow.h"
 using namespace std;
 using namespace System;
@@ -21,7 +23,7 @@ string exec(const char* cmd)
 	char buffer[128];
 	string result = "";
 
-	//pid_t processKiller = fork();
+	cout << "get into exec" << endl;
 
 	FILE* pipe = _popen(cmd, "r");
 	if (!pipe) throw runtime_error("_popen() failed!");
@@ -43,22 +45,50 @@ string exec(const char* cmd)
 	return result;
 }
 
-string command(const char* cmd)
+string command(string cmd)
 {
-	BOOL bSuccess;
+
+	//string computer = "wmic /node:\"lab-sec360-02\" nicconfig get IPAddress";
+	//TCHAR commando[] = TEXT("wmic /node:\"lab-sec360-02\" nicconfig get IPAddress");
+
+	/*
+	TCHAR* testb = new TCHAR[cmd.size()];
+	
+	for (int i = 0; i < cmd.size(); i++) {
+		testb[i] = cmd[i];
+		cout << testb[i];
+	}
+	cout << endl;
+
+	cout << *testb << endl;
+	*/
+
+	/*
+	wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
+	wstring wide = converter.from_bytes(cmd);
+
+	*/
+
+	TCHAR *param = new TCHAR[cmd.size() + 1];
+	param[cmd.size()] = 0;
+
+	copy(cmd.begin(), cmd.end(), param);
+
+	BOOL bSuccess = false;
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 	string result;
 
-	ZeroMemory(&si, sizeof(si));
-	si.cb = sizeof(si);
-	ZeroMemory(&pi, sizeof(pi));
+	ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
+
+	ZeroMemory(&si, sizeof(STARTUPINFO));
+	si.cb = sizeof(STARTUPINFO);
 
 	bSuccess = CreateProcess(NULL,
-		(LPWSTR) cmd,
+		param,
 		NULL,
 		NULL,
-		FALSE,
+		TRUE,
 		0,
 		NULL,
 		NULL,
@@ -69,17 +99,17 @@ string command(const char* cmd)
 
 	//Sleep(1000);
 
-	if (bSuccess == false)
+	if ( ! bSuccess)
 	{
-		result = exec(cmd);
+		result = exec(cmd.c_str());
 	}
 	else
 	{
 		result = "computer in error";
-	}
 
-	CloseHandle(pi.hProcess); 
-	CloseHandle(pi.hThread);
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
 
 	return result;
 }
@@ -185,7 +215,7 @@ int main()
 	string cmd = "wmic /node:\"" + compName + "\" nicconfig get IPAddress";
 
 
-	string rawResult = command(cmd.c_str());
+	string rawResult = command(cmd);
 
 	cout << "rawResult: " <<  rawResult << endl;
 
