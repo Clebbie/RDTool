@@ -232,17 +232,21 @@ namespace RDToolGUI
 				if (status == 1)
 				{
 					//Set color to yellow
-					test->BackColor = test->BackColor.Yellow;
+					System::Drawing::Color a = System::Drawing::Color::FromArgb(255, 240, 230, 140);
+					
+					test->BackColor = a;
 				}
 				else if (status == 2)
 				{
 					//Set color to red
-					test->BackColor = test->BackColor.IndianRed;
+					System::Drawing::Color a = System::Drawing::Color::FromArgb(255, 250, 128, 114);
+					test->BackColor = a;
 				}
 				else
 				{
 					//Set color to Green
-					test->BackColor = test->BackColor.LawnGreen;
+					System::Drawing::Color a = System::Drawing::Color::FromArgb(255, 144, 238, 144);
+					test->BackColor = a;
 				}
 				//Adds the panel to the display
 				computerDisplay->Controls->Add(test);
