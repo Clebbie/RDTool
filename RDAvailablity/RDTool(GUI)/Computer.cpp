@@ -133,12 +133,12 @@ void Computer::checkUser()
 		if (number[0] == 'S' )
 		{
 			int j = 0;
-			for (int i = 0; i < 15; i++)
+			for (int i = 7; i < 15; i++)
 			{
 				out[j] = number[i];
 				j++;
 			}
-			out[15] = '\0';
+			out[j] = '\0';
 			setStatus(Status(InUse));
 			setUser(out);
 		}

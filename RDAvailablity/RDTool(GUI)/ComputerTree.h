@@ -1,5 +1,8 @@
 #pragma once
 #include<string>
+#include <windows.h>
+#include <stdio.h>
+#include <tchar.h>
 
 template <class DT>
 class ComputerTree
@@ -30,6 +33,7 @@ public:
 	void zag();
 	void inOrderDisplay();
 	void preOrderDisplay();
+	void checkTreeStatus();
 	void operator=(const ComputerTree<DT>& compTree);
 	template<class DT>
 	friend ostream& operator<<(ostream& os, const ComputerTree<DT>& comp);
@@ -54,9 +58,11 @@ inline ComputerTree<DT>::ComputerTree(DT* computer)
 template<class DT>
 inline ComputerTree<DT>::~ComputerTree()
 {
-	delete _info;
+	_left = nullptr;
 	delete _left;
+	_right = nullptr;
 	delete _right;
+	_info = nullptr;
 }
 
 template<class DT>
@@ -114,6 +120,8 @@ inline void ComputerTree<DT>::remove(DT * computer)
 		{
 			delete (*temp)._left;
 			delete (*temp)._right;
+			(*temp)._left = nullptr;
+			(*temp)._right = nullptr;
 			(*temp)._info = nullptr;
 			//delete (*temp)._info;
 		}
@@ -366,6 +374,23 @@ inline void ComputerTree<DT>::preOrderDisplay()
 	{
 		_right->preOrderDisplay();
 		cout << endl;
+	}
+}
+
+template<class DT>
+inline void ComputerTree<DT>::checkTreeStatus()
+{
+	if (_left->_info != nullptr)
+	{
+		_left->checkTreeStatus();
+	}
+	if (_info!= nullptr)
+	{
+		_info->checkUser();
+	}
+	if (_right->_info != nullptr)
+	{
+		_right->checkTreeStatus();
 	}
 }
 
