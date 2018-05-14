@@ -11,108 +11,10 @@
 #include <string>
 #include <sys/types.h>
 #include <windows.h>
-#include <locale>
-#include <codecvt>
 #include"MainWindow.h"
 using namespace std;
 using namespace System;
 using namespace System::Windows::Forms;
-
-string exec(const char* cmd) 
-{
-	char buffer[128];
-	string result = "";
-
-	cout << "get into exec" << endl;
-
-	FILE* pipe = _popen(cmd, "r");
-	if (!pipe) throw runtime_error("_popen() failed!");
-	try
-	{
-		while (!feof(pipe))
-		{
-			if (fgets(buffer, 128, pipe) != NULL)
-			{
-				result += buffer;
-			}
-		}
-	}
-	catch (...) {
-		_pclose(pipe);
-		throw;
-	}
-	_pclose(pipe);
-	return result;
-}
-
-string command(string cmd)
-{
-
-	//string computer = "wmic /node:\"lab-sec360-02\" nicconfig get IPAddress";
-	//TCHAR commando[] = TEXT("wmic /node:\"lab-sec360-02\" nicconfig get IPAddress");
-
-	/*
-	TCHAR* testb = new TCHAR[cmd.size()];
-	
-	for (int i = 0; i < cmd.size(); i++) {
-		testb[i] = cmd[i];
-		cout << testb[i];
-	}
-	cout << endl;
-
-	cout << *testb << endl;
-	*/
-
-	/*
-	wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
-	wstring wide = converter.from_bytes(cmd);
-
-	*/
-
-	TCHAR *param = new TCHAR[cmd.size() + 1];
-	param[cmd.size()] = 0;
-
-	copy(cmd.begin(), cmd.end(), param);
-
-	BOOL bSuccess = false;
-	STARTUPINFO si;
-	PROCESS_INFORMATION pi;
-	string result;
-
-	ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
-
-	ZeroMemory(&si, sizeof(STARTUPINFO));
-	si.cb = sizeof(STARTUPINFO);
-
-	bSuccess = CreateProcess(NULL,
-		param,
-		NULL,
-		NULL,
-		TRUE,
-		0,
-		NULL,
-		NULL,
-		&si,
-		&pi);
-	
-	WaitForSingleObject(pi.hProcess, 1000);
-
-	//Sleep(1000);
-
-	if ( ! bSuccess)
-	{
-		result = exec(cmd.c_str());
-	}
-	else
-	{
-		result = "computer in error";
-
-		CloseHandle(pi.hProcess);
-		CloseHandle(pi.hThread);
-	}
-
-	return result;
-}
 
 int main()
 {
@@ -191,56 +93,8 @@ int main()
 	//Displays tree
 	cout << "************************************************************" << endl;
 
-	/*
-	//testerino->inOrderDisplay();
 
-	testerino->generateReport();
-	cout << endl;
-	cout << "Report has been generated" << endl;
-
-	//This will let you see whats going on
-	system("PAUSE");
-	//RDToolGUI::MainWindow form(testerino);
-	//Application::Run(%form);
-
-	string computerName = "lab-sec360-03";
-	
-	string cmd = "wmic /node:\""; 
-	cmd = cmd + computerName;
-	cmd = cmd + "\" nicconfig get IPAddress";
-	*/
-
-	string compName = "lab-sec360-01";
-
-	string cmd = "wmic /node:\"" + compName + "\" nicconfig get IPAddress";
-
-
-	string rawResult = command(cmd);
-
-	cout << "rawResult: " <<  rawResult << endl;
-
-	string result;
-
-	result = rawResult.substr(rawResult.find('{') + 2, 14);
-
-	cout << "Result: " <<  result << endl;
-
-	//Name the output file
-	string outputFileName = "RDTool Report.csv";
-
-	//Create the file output object
-	ofstream outputFile(outputFileName);
-
-	if (outputFile.is_open())
-	{
-		outputFile << result << endl;
-
-		outputFile.close();
-	}
-	else
-	{
-		cout << "File not accessible" << endl;
-	}
+	testerino->traverseIP();
 
 
 	system("PAUSE");
