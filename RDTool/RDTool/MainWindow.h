@@ -78,7 +78,6 @@ namespace RDTool
 			this->computerDisplay = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->test = (gcnew System::Windows::Forms::Button());
-			this->computerDisplay->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// computerTree
@@ -91,6 +90,7 @@ namespace RDTool
 			this->computerTree->Size = System::Drawing::Size(188, 1041);
 			this->computerTree->TabIndex = 0;
 			this->computerTree->AfterCheck += gcnew System::Windows::Forms::TreeViewEventHandler(this, &MainWindow::computerTree_AfterSelect);
+			this->computerTree->AfterSelect += gcnew System::Windows::Forms::TreeViewEventHandler(this, &MainWindow::computerTree_AfterSelect_1);
 			// 
 			// computerDisplay
 			// 
@@ -129,8 +129,6 @@ namespace RDTool
 			this->Controls->Add(this->computerTree);
 			this->Name = L"MainWindow";
 			this->Text = L"RDTool";
-			this->computerDisplay->ResumeLayout(false);
-			this->computerDisplay->PerformLayout();
 			this->ResumeLayout(false);
 
 		}
@@ -301,6 +299,8 @@ namespace RDTool
 		string name = msclr::interop::marshal_as<std::string>(ctrl->Parent->Name->ToString());
 		selectedTree->find(name)->getInfo()->turnOn();
 	}
+private: System::Void computerTree_AfterSelect_1(System::Object^  sender, System::Windows::Forms::TreeViewEventArgs^  e) {
+}
 };
 
 }
