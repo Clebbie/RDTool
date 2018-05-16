@@ -4,7 +4,7 @@
 #include <msclr\marshal_cppstd.h>
 
 
-namespace RDToolGUI
+namespace RDTool
 {
 
 	using namespace System;
@@ -45,7 +45,7 @@ namespace RDToolGUI
 			 ComputerTree<Computer>* _tree;
 
 	private: System::Windows::Forms::Label^  label1;
-	//private: System::Windows::Forms::Button^  labViewButton;
+			 //private: System::Windows::Forms::Button^  labViewButton;
 	private: System::Windows::Forms::Button^  remoteButton;
 	private: System::Windows::Forms::Button^  test;
 	private: System::Windows::Forms::FlowLayoutPanel^  computerDisplay;
@@ -78,6 +78,7 @@ namespace RDToolGUI
 			this->computerDisplay = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->test = (gcnew System::Windows::Forms::Button());
+			this->computerDisplay->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// computerTree
@@ -128,6 +129,8 @@ namespace RDToolGUI
 			this->Controls->Add(this->computerTree);
 			this->Name = L"MainWindow";
 			this->Text = L"RDTool";
+			this->computerDisplay->ResumeLayout(false);
+			this->computerDisplay->PerformLayout();
 			this->ResumeLayout(false);
 
 		}
@@ -208,7 +211,7 @@ namespace RDToolGUI
 				selectedTree->insert(temp->getInfo());
 				String^ labelName = e->Node->Name;
 				String^ labelStatus;
-				
+
 				//This will set the label for the panel
 				temp->getInfo()->checkUser();
 				int status = temp->getInfo()->getStatus();
@@ -233,7 +236,7 @@ namespace RDToolGUI
 				{
 					//Set color to yellow
 					System::Drawing::Color a = System::Drawing::Color::FromArgb(255, 240, 230, 140);
-					
+
 					test->BackColor = a;
 				}
 				else if (status == 2)
@@ -250,8 +253,8 @@ namespace RDToolGUI
 				}
 				//Adds the panel to the display
 				computerDisplay->Controls->Add(test);
-				
-				
+
+
 
 			}
 			else
@@ -267,17 +270,17 @@ namespace RDToolGUI
 			}
 		}
 	}
-	//This is the event listener for the remote button
+			 //This is the event listener for the remote button
 	public: System::Void remoteButton_Click(System::Object^  sender, System::EventArgs^  e)
 	{
 		//creates the button from the sender
 		Button^ ctrl = safe_cast<Button^>(sender);
-		
+
 		//Gets the panel name (Which is the name of the computer) then calls remote desktop on it
 		string name = msclr::interop::marshal_as<std::string>(ctrl->Parent->Name->ToString());
 		selectedTree->find(name)->getInfo()->remoteDesktop();
 	}
-	//This is the event listener for the lab view button
+			//This is the event listener for the lab view button
 	public: System::Void labViewButton_Click(System::Object^ sender, System::EventArgs^ e)
 	{
 		//creates the button from the sender
@@ -287,8 +290,8 @@ namespace RDToolGUI
 		string name = msclr::interop::marshal_as<std::string>(ctrl->Parent->Name->ToString());
 		selectedTree->find(name)->getInfo()->labView();
 	}
-	//This is the event listener for the magic packets butt
-	//TODO: Need to test this
+			//This is the event listener for the magic packets butt
+			//TODO: Need to test this
 	public: System::Void magicButton_Click(System::Object^ sender, System::EventArgs^ e)
 	{
 		//creates the button from the sender
@@ -298,7 +301,6 @@ namespace RDToolGUI
 		string name = msclr::interop::marshal_as<std::string>(ctrl->Parent->Name->ToString());
 		selectedTree->find(name)->getInfo()->turnOn();
 	}
-
 };
 
 }

@@ -75,7 +75,7 @@ int main()
 			Computer* temp = new Computer((computerName), (ipAddress), (macAddress), (college));
 			testerino->insert(temp);
 			inputFile.peek();
-			
+
 		}
 	}
 	else
@@ -86,10 +86,10 @@ int main()
 	//Displays tree
 	cout << "************************************************************" << endl;
 	//testerino->inOrderDisplay();
-
+	//testerino->checkStatus();
 	//This will let you see whats going on
 	//system("PAUSE");
-	RDToolGUI::MainWindow form(testerino);
+	RDTool::MainWindow form(testerino);
 	Application::Run(%form);
 	return 0;
 }

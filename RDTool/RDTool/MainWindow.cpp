@@ -1,7 +1,8 @@
 #include "MainWindow.h"
 #include<string>
+using namespace System;
 
-void RDToolGUI::MainWindow::populateViewTree(ComputerTree<Computer>* tree, System::Windows::Forms::TreeView ^ view)
+void RDTool::MainWindow::populateViewTree(ComputerTree<Computer>* tree, System::Windows::Forms::TreeView ^ view)
 {
 	//throw gcnew System::NotImplementedException();
 	string currentCollege = "";
@@ -58,12 +59,8 @@ void RDToolGUI::MainWindow::populateViewTree(ComputerTree<Computer>* tree, Syste
 	
 }
 
-System::Windows::Forms::Panel^ RDToolGUI::MainWindow::createPanel(System::String ^ name, System::String ^ status, System::Windows::Forms::FlowLayoutPanel ^ display)
+System::Windows::Forms::Panel^ RDTool::MainWindow::createPanel(System::String ^ name, System::String ^ status, System::Windows::Forms::FlowLayoutPanel ^ display)
 {
-	/*throw gcnew System::NotImplementedException();*/
-	// 
-	// labelName
-	//
 	System::Windows::Forms::Label^ labelName = gcnew Label();
 
 	labelName->AutoSize = true;

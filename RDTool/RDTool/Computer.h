@@ -1,10 +1,11 @@
 #pragma once
+#pragma once
 #include <iostream>
 #include<string>
 using namespace std;
 
 
-class Computer 
+class Computer
 {
 public:
 	enum Status { Available = 0, InUse = 1, Unknown = 2, };
@@ -20,7 +21,7 @@ protected:
 
 public:
 	Computer();
-	Computer(string name,string ip,string mac,string college);
+	Computer(string name, string ip, string mac, string college);
 	Computer(const Computer& comp);
 	~Computer();
 
@@ -34,12 +35,12 @@ public:
 
 	//setters
 	void setName(string name);
-	void setUser(char* user);
+	void setUser(string user);
 	void setStatus(Status newStatus);
 	void setMac(string& mac);
 	void setIP(string& ip);
 	void setSelection(bool selection);
-	
+
 	//Four main functions
 	int turnOn();
 	void remoteDesktop();
@@ -59,11 +60,11 @@ public:
 	bool operator <=(Computer& comp);
 	bool operator==(Computer& comp);
 	void operator=(const Computer& comp);
-	
-	
-	friend ostream& operator<< (  ostream& os,  Computer& comp);
-	
-	
+
+
+	friend ostream& operator<< (ostream& os, Computer& comp);
+
+
 
 };
 

@@ -1,8 +1,9 @@
 #pragma once
 #include<string>
-#include <windows.h>
-#include <stdio.h>
-#include <tchar.h>
+#include<fstream>
+#include<iomanip>
+#include<iostream>
+#include<windows.h>
 
 template <class DT>
 class ComputerTree
@@ -32,8 +33,13 @@ public:
 	void zig();
 	void zag();
 	void inOrderDisplay();
+	void writeFile(ofstream& outputFile);
 	void preOrderDisplay();
-	void checkTreeStatus();
+	void documentTreeTraversal(ofstream& outputFile);
+	void generateReport();
+	string runCommand(string cmd);
+	void displayIP();
+	void traverseIP();
 	void operator=(const ComputerTree<DT>& compTree);
 	template<class DT>
 	friend ostream& operator<<(ostream& os, const ComputerTree<DT>& comp);
@@ -296,6 +302,15 @@ inline void ComputerTree<DT>::display()
 }
 
 template<class DT>
+inline void ComputerTree<DT>::writeFile(ofstream& outputFile)
+{
+	//outputFile << (*this) << endl;
+	outputFile << (*_info).getName() << "," << (*_info).getIP() << "," << (*_info).getMac() << endl;
+	cout << "Writing computer: " << (*_info).getName() << endl;
+
+}
+
+template<class DT>
 inline void ComputerTree<DT>::zig()
 {
 	//Creating the temp tree and copying the right to the right of the temp tree...
@@ -378,20 +393,149 @@ inline void ComputerTree<DT>::preOrderDisplay()
 }
 
 template<class DT>
-inline void ComputerTree<DT>::checkTreeStatus()
+inline void ComputerTree<DT>::documentTreeTraversal(ofstream& outputFile)
 {
-	if (_left->_info != nullptr)
+	if ((*_left)._info != nullptr)
 	{
-		_left->checkTreeStatus();
+		_left->documentTreeTraversal(outputFile);
 	}
-	if (_info!= nullptr)
+	if (_info != nullptr)
 	{
-		_info->checkUser();
+		//_info->writeFile(outputFile);
+		writeFile(outputFile);
 	}
-	if (_right->_info != nullptr)
+	if ((*_right)._info != nullptr)
 	{
-		_right->checkTreeStatus();
+		_right->documentTreeTraversal(outputFile);
 	}
+}
+
+template<class DT>
+inline void ComputerTree<DT>::generateReport()
+{
+	//Name the output file
+	string outputFileName = "RDTool Report.csv";
+
+	//Create the file output object
+	ofstream outputFile(outputFileName);
+
+	if (outputFile.is_open())
+	{
+		outputFile << "Computer Name, IP Address, MAC Address" << endl;
+
+		documentTreeTraversal(outputFile);
+
+		outputFile.close();
+	}
+	else
+	{
+		cout << "File not accessible" << endl;
+	}
+
+
+}
+
+template<class DT>
+inline string ComputerTree<DT>::runCommand(string cmd)
+{
+	TCHAR *param = new TCHAR[cmd.size() + 1];
+	param[cmd.size()] = 0;
+
+	copy(cmd.begin(), cmd.end(), param);
+
+	BOOL bSuccess = false;
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+	string result;
+
+	ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
+
+	ZeroMemory(&si, sizeof(STARTUPINFO));
+	si.cb = sizeof(STARTUPINFO);
+
+	bSuccess = CreateProcess(NULL,
+		param,
+		NULL,
+		NULL,
+		TRUE,
+		0,
+		NULL,
+		NULL,
+		&si,
+		&pi);
+
+	WaitForSingleObject(pi.hProcess, 1000);
+
+	if (!bSuccess)
+	{
+		const char* commando = cmd.c_str();
+		char buffer[128];
+		string result = "";
+
+		//cout << "get into exec" << endl;
+
+		FILE* pipe = _popen(commando, "r");
+		if (!pipe) throw runtime_error("_popen() failed!");
+		try
+		{
+			while (!feof(pipe))
+			{
+				if (fgets(buffer, 128, pipe) != NULL)
+				{
+					result += buffer;
+				}
+			}
+		}
+		catch (...) {
+			_pclose(pipe);
+			throw;
+		}
+		_pclose(pipe);
+	}
+	else
+	{
+		result = "computer in error";
+
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
+
+	return result;
+}
+
+template<class DT>
+inline void ComputerTree<DT>::traverseIP()
+{
+	if ((*_left)._info != nullptr)
+	{
+		_left->traverseIP();
+		cout << endl;
+	}
+	if (_info != nullptr)
+	{
+		//_info->displayIP();
+		displayIP();
+		cout << endl;
+	}
+	if ((*_right)._info != nullptr)
+	{
+		_right->traverseIP();
+		cout << endl;
+	}
+}
+
+template<class DT>
+inline void ComputerTree<DT>::displayIP()
+{
+	string ip;
+
+	string cmd = "wmic /node:\"" + (*_info).getName() + "\" nicconfig get IPAddress";
+
+	string rawResult = runCommand(cmd);
+
+	ip = rawResult.substr(rawResult.find('{') + 2, 14);
+
+	cout << (*_info).getName() << "'s IP Address: " << ip << endl;
 }
 
 template<class DT>
