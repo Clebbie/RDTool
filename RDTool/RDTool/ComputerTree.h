@@ -446,7 +446,7 @@ inline string ComputerTree<DT>::runCommand(string cmd)
 	BOOL bSuccess = false;
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
-	string result;
+	string result = "Computer in Error State";
 
 	ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
 

@@ -112,11 +112,8 @@ char* Computer::deepCopy(string cString)
 	return out;
 }
 
-void Computer::checkUser()
+string runCommand(string cmd)
 {
-	//Runs the command to find a user on a PC
-	string cmd = "wmic /node:\"" + _name + "\" computersystem get username";		//Runs the command to find a user on a PC
-	
 	TCHAR *param = new TCHAR[cmd.size() + 1];
 	param[cmd.size()] = 0;
 
@@ -125,7 +122,7 @@ void Computer::checkUser()
 	BOOL bSuccess = false;
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
-	string result;
+	string result = "Computer in Error State!";
 
 	ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
 
@@ -144,134 +141,76 @@ void Computer::checkUser()
 		&pi);
 
 	auto trial = WaitForSingleObject(pi.hProcess, 1000);
-	CloseHandle(pi.hProcess);
-	CloseHandle(pi.hThread);
 
-	if (trial == WAIT_OBJECT_0)
+	if (!bSuccess)
 	{
-		const char* commando = cmd.c_str();
-		char buffer[128];
-		string result = "defaults";
-
-		//cout << "get into exec" << endl;
-
-		FILE* pipe = _popen(commando, "r");
-		if (!pipe) throw runtime_error("_popen() failed!");
-		try
-		{
-			/*while (!feof(pipe))
-			{
-				if (fgets(buffer, 128, pipe) != NULL)
-				{
-					result += buffer;
-				}
-			}*/
-			int count = 0;
-			int index = 0;
-			
-				while (fgets(buffer, 128, pipe) != NULL)
-				{
-					fgets(buffer, 20, pipe);
-					for (count; buffer[count] != '\0'; count++)
-					{
-						count++;
-					}
-					count++;
-					//Check to see if there is a user, by looking for the S in SOONER\4x4
-					if (buffer[0] == 'S')
-					{
-						int j = 0;
-						for (int i = 7; i < 15; i++)
-						{
-							result[j] = buffer[i];
-							j++;
-						}
-						result[j] = '\0';
-						setStatus(Status(InUse));
-						setUser(result);
-					}
-					//If computer is off by looking for the E in ERROR
-					else if (buffer[0] == 'E')
-					{
-						setStatus(Status(Unknown));
-					}
-					//Computer is not in use
-					else
-					{
-						setStatus(Status(Available));
-					}
-					index++;
-					if (index == 1)
-					{
-						break;
-					}
-				}
-			
-		}
-		catch (...) {
-			_pclose(pipe);
-			throw;
-		}
-		_pclose(pipe);
+		cout << "Process failed" << endl;
+		ExitProcess(1);
 	}
 	else
 	{
-		result = "computer in error";
+		if (trial == WAIT_OBJECT_0)
+		{
+			char buffer[128];
+			result = "";
+			const char* charCommand = cmd.c_str();
+
+			//cout << "get into exec" << endl;
+
+			FILE* pipe = _popen(charCommand, "r");
+			if (!pipe) throw runtime_error("_popen() failed!");
+			try
+			{
+				while (!feof(pipe))
+				{
+					if (fgets(buffer, 128, pipe) != NULL)
+					{
+						result += buffer;
+					}
+				}
+			}
+			catch (...) {
+				_pclose(pipe);
+				throw;
+			}
+			_pclose(pipe);
+		}
+		return result;
 
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
 	}
-	cout << *this << endl;;
+}
+
+
+void Computer::checkUser()
+{
+	//Runs the command to find a user on a PC
+	string cmd = "wmic /node:\"" + _name + "\" computersystem get username";		//Runs the command to find a user on a PC
+
+	string result = runCommand(cmd);
+	
+	string user;
+
+	if (result.find("SOONER") != string::npos)
+	{
+		setStatus(Status(InUse));
+		user = result.substr(result.find('R') + 2, 8);
+		setUser(user);
+	}
+	//else if (result.find('E') != string::npos)
+	else if (result == "Computer in Error State!")
+	{
+		setStatus(Status(Unknown));
+	}
+	else
+	{
+		setStatus(Status(Available));
+	}
 
 	
-	
-	
-	//char* number = new char[20];
-	//Opens Powershell
-	//FILE *f = _popen(command.c_str(), "r");
-	//int count = 0;
-	//int index = 0;
-	//char* out = new char[16];
-
-	//While there is stuff to get, get it
-	//while (fgets(number, 100, f) != NULL)
-	//{
-	//	fgets(number, 20, f);
-	//	for (count; number[count] != '\0'; count++)
-	//	{
-	//		count++;
-	//	}
-	//	count++;
-	//	//Check to see if there is a user, by looking for the S in SOONER\4x4
-	//	if (number[0] == 'S')
-	//	{
-	//		int j = 0;
-	//		for (int i = 7; i < 15; i++)
-	//		{
-	//			out[j] = number[i];
-	//			j++;
-	//		}
-	//		out[j] = '\0';
-	//		setStatus(Status(InUse));
-	//		setUser(out);
-	//	}
-	//	//If computer is off by looking for the E in ERROR
-	//	else if (number[0] == 'E')
-	//	{
-	//		setStatus(Status(Unknown));
-	//	}
-	//	//Computer is not in use
-	//	else
-	//	{
-	//		setStatus(Status(Available));
-	//	}
-	//	index++;
-	//	if (index == 1)
-	//	{
-	//		break;
-	//	}
-	//}
-	//_pclose(f);
+	cout << *this << endl;
+	cout << "*********************************************************" << endl;
 }
 
 void Computer::remoteDesktop()
