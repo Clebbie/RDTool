@@ -2,6 +2,8 @@
 #include"Computer.h"
 #include"ComputerTree.h"
 #include <msclr\marshal_cppstd.h>
+#include <chrono>
+#include<Windows.h>
 
 
 namespace RDTool
@@ -21,12 +23,16 @@ namespace RDTool
 	{
 
 	public:
+		static ComputerTree<Computer>* selectedTree;
 		MainWindow(ComputerTree<Computer>* tree)
 		{
 			_tree = tree;
 			selectedTree = new ComputerTree<Computer>();
 			InitializeComponent();
 			populateViewTree(tree, computerTree);
+			
+			
+			
 			//computerTree->Update();
 		}
 
@@ -41,6 +47,7 @@ namespace RDTool
 				delete components;
 			}
 		}
+		
 	private: System::Windows::Forms::TreeView^  computerTree;
 			 ComputerTree<Computer>* _tree;
 
@@ -49,6 +56,7 @@ namespace RDTool
 	private: System::Windows::Forms::Button^  remoteButton;
 	private: System::Windows::Forms::Button^  test;
 	private: System::Windows::Forms::FlowLayoutPanel^  computerDisplay;
+	private: RDTool::Timer tCheck;
 
 	public: System::Windows::Forms::Panel^ createPanel(System::String^ name, System::String^ status, System::Windows::Forms::FlowLayoutPanel^ display);
 
@@ -136,7 +144,9 @@ namespace RDTool
 		}
 #pragma endregion
 		void populateViewTree(ComputerTree<Computer>* tree, System::Windows::Forms::TreeView ^ view);
-		ComputerTree<Computer>* selectedTree;
+		
+		void paintPanels(System::Windows::Forms::FlowLayoutPanel^ compDispaly);
+		
 	private: System::Void computerTree_AfterSelect(System::Object^  sender, System::Windows::Forms::TreeViewEventArgs^  e)
 	{
 		//College level selected
@@ -304,3 +314,7 @@ namespace RDTool
 };
 
 }
+
+
+
+

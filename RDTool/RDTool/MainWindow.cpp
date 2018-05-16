@@ -59,6 +59,11 @@ void RDTool::MainWindow::populateViewTree(ComputerTree<Computer>* tree, System::
 	
 }
 
+void RDTool::MainWindow::paintPanels(System::Windows::Forms::FlowLayoutPanel^ compDispaly)
+{
+	//TODO: Write the paint panels method
+}
+
 System::Windows::Forms::Panel^ RDTool::MainWindow::createPanel(System::String ^ name, System::String ^ status, System::Windows::Forms::FlowLayoutPanel ^ display)
 {
 	System::Windows::Forms::Label^ labelName = gcnew Label();

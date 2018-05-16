@@ -10,6 +10,17 @@ using namespace System;
 using namespace System::Windows::Forms;
 
 
+DWORD WINAPI Check(void *)
+{
+	while (true)
+	{
+		cout << "Checking statuses" << endl;
+		RDTool::MainWindow::selectedTree->checkStatus();
+		cout << "Done. Now sleeping :3" << endl;
+		Sleep(10000);
+	}
+	return 0;
+}
 
 int main()
 {
@@ -90,6 +101,8 @@ int main()
 	//This will let you see whats going on
 	//system("PAUSE");
 	RDTool::MainWindow form(testerino);
+	HANDLE thread = CreateThread(NULL, 0, Check, NULL, 0, NULL);
 	Application::Run(%form);
+
 	return 0;
 }

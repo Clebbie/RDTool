@@ -218,10 +218,7 @@ void Computer::checkUser()
 	{
 		result = "computer in error";
 
-		CloseHandle(pi.hProcess);
-		CloseHandle(pi.hThread);
 	}
-	cout << *this << endl;;
 
 	
 	
