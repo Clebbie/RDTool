@@ -55,7 +55,7 @@ namespace RDTool
 			 //private: System::Windows::Forms::Button^  labViewButton;
 	private: System::Windows::Forms::Button^  remoteButton;
 	private: System::Windows::Forms::Button^  test;
-	private: System::Windows::Forms::FlowLayoutPanel^  computerDisplay;
+	private: static System::Windows::Forms::FlowLayoutPanel^  computerDisplay;
 	private: RDTool::Timer tCheck;
 
 	public: System::Windows::Forms::Panel^ createPanel(System::String^ name, System::String^ status, System::Windows::Forms::FlowLayoutPanel^ display);
@@ -145,7 +145,7 @@ namespace RDTool
 #pragma endregion
 		void populateViewTree(ComputerTree<Computer>* tree, System::Windows::Forms::TreeView ^ view);
 		
-		void paintPanels(System::Windows::Forms::FlowLayoutPanel^ compDispaly);
+		public: static void paintPanels(ComputerTree<Computer>* tree);
 		
 	private: System::Void computerTree_AfterSelect(System::Object^  sender, System::Windows::Forms::TreeViewEventArgs^  e)
 	{
@@ -242,25 +242,7 @@ namespace RDTool
 				}
 				//This creates the panel then checks the user of the panel;
 				Panel^ test = createPanel(labelName, labelStatus, computerDisplay);
-				if (status == 1)
-				{
-					//Set color to yellow
-					System::Drawing::Color a = System::Drawing::Color::FromArgb(255, 240, 230, 140);
-
-					test->BackColor = a;
-				}
-				else if (status == 2)
-				{
-					//Set color to red
-					System::Drawing::Color a = System::Drawing::Color::FromArgb(255, 250, 128, 114);
-					test->BackColor = a;
-				}
-				else
-				{
-					//Set color to Green
-					System::Drawing::Color a = System::Drawing::Color::FromArgb(255, 144, 238, 144);
-					test->BackColor = a;
-				}
+				
 				//Adds the panel to the display
 				computerDisplay->Controls->Add(test);
 

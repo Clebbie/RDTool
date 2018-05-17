@@ -9,15 +9,18 @@ using namespace std;
 using namespace System;
 using namespace System::Windows::Forms;
 
-
+//This is the thread to execute every minute
 DWORD WINAPI Check(void *)
 {
 	while (true)
 	{
 		cout << "Checking statuses" << endl;
 		RDTool::MainWindow::selectedTree->checkStatus();
+		//TODO: Write the paint Panels method
+		RDTool::MainWindow::paintPanels(RDTool::MainWindow::selectedTree);
+		//RDTool::MainWindow::paintPanels();
 		cout << "Done. Now sleeping :3" << endl;
-		Sleep(10000);
+		Sleep(60000);
 	}
 	return 0;
 }
@@ -26,7 +29,6 @@ int main()
 {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
-	//TODO: Replace this with the actual data structure
 	ComputerTree<Computer> *testerino = new ComputerTree<Computer>();
 	char* header = new char[250];				//Will hold the header
 	string computerInfo;						//Will hold each line of the file

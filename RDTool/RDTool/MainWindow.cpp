@@ -59,9 +59,47 @@ void RDTool::MainWindow::populateViewTree(ComputerTree<Computer>* tree, System::
 	
 }
 
-void RDTool::MainWindow::paintPanels(System::Windows::Forms::FlowLayoutPanel^ compDispaly)
+void RDTool::MainWindow::paintPanels(ComputerTree<Computer>* tree)
 {
 	//TODO: Write the paint panels method
+	//Need to traverse the layout getting the status of each one
+	//probably by looking for key words (i.e. available, In use, Unknown)
+	//then needs to update the status label and paint the panel.
+
+	if (tree->getInfo() != nullptr)
+	{
+		paintPanels(tree->getLeft());
+	}
+	if (tree->getInfo() != nullptr)
+	{
+		int status = tree->getInfo()->getStatus();
+		string rawName = tree->getInfo()->getName();
+		String^ name = gcnew String(rawName.c_str());
+		Color a;
+		if (status == 1)
+		{
+			//Set color to yellow
+			a = System::Drawing::Color::FromArgb(255, 240, 230, 140);
+		}
+		else if (status == 2)
+		{
+			//Set color to red
+			 a = System::Drawing::Color::FromArgb(255, 250, 128, 114);
+		}
+		else
+		{
+			//Set color to Green
+			a = System::Drawing::Color::FromArgb(255, 144, 238, 144);
+		}
+		auto comp = computerDisplay->Controls->Find(name, false);
+		comp[0]->BackColor = a;
+		
+	}
+	if (tree->getRight() != nullptr)
+	{
+		paintPanels(tree->getRight());
+	}
+	
 }
 
 System::Windows::Forms::Panel^ RDTool::MainWindow::createPanel(System::String ^ name, System::String ^ status, System::Windows::Forms::FlowLayoutPanel ^ display)
@@ -86,6 +124,7 @@ System::Windows::Forms::Panel^ RDTool::MainWindow::createPanel(System::String ^ 
 	computerStatus->Name = L"computerStatus";
 	computerStatus->Size = System::Drawing::Size(120, 22);
 	computerStatus->Text = status;
+
 	// 
 	// labview button
 	// 
@@ -128,6 +167,23 @@ System::Windows::Forms::Panel^ RDTool::MainWindow::createPanel(System::String ^ 
 	remoteButton->Parent = pan;
 	magicButton->Parent = pan;
 	labViewButton->Parent = pan;
+	//
+	//Color
+	//
+	
+	if (status[0] == ' ')
+	{
+		
+		pan->BackColor = System::Drawing::Color::FromArgb(255, 240, 230, 140);
+	}
+	else if (status[0] == 'U')
+	{
+		pan->BackColor = System::Drawing::Color::FromArgb(255, 250, 128, 114);
+	}
+	else
+	{
+		pan->BackColor = System::Drawing::Color::FromArgb(255, 144, 238, 144);
+	}
 	//Setting the listners for the three buttons
 	remoteButton->Click += gcnew System::EventHandler(this, &MainWindow::remoteButton_Click);
 	labViewButton->Click += gcnew System::EventHandler(this, &MainWindow::labViewButton_Click);

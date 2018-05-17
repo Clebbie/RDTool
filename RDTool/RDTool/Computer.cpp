@@ -171,8 +171,10 @@ void Computer::checkUser()
 			
 				while (fgets(buffer, 128, pipe) != NULL)
 				{
-					fgets(buffer, 20, pipe);
-					for (count; buffer[count] != '\0'; count++)
+					fgets(buffer, 128, pipe);
+					string sBuffer = string(buffer);
+					int temp = sBuffer.find_last_of("\"");
+					for (count; buffer[count] != '\'' ; count++)
 					{
 						count++;
 					}
@@ -182,6 +184,19 @@ void Computer::checkUser()
 					{
 						int j = 0;
 						for (int i = 7; i < 15; i++)
+						{
+							result[j] = buffer[i];
+							j++;
+						}
+						result[j] = '\0';
+						setStatus(Status(InUse));
+						setUser(result);
+					}
+					//Checking for local Admin
+					else if (buffer[0] == 'L')
+					{
+						int j = 0;
+						for (int i = temp; buffer[i] != '\0'; i++)
 						{
 							result[j] = buffer[i];
 							j++;
@@ -219,56 +234,6 @@ void Computer::checkUser()
 		result = "computer in error";
 
 	}
-
-	
-	
-	
-	//char* number = new char[20];
-	//Opens Powershell
-	//FILE *f = _popen(command.c_str(), "r");
-	//int count = 0;
-	//int index = 0;
-	//char* out = new char[16];
-
-	//While there is stuff to get, get it
-	//while (fgets(number, 100, f) != NULL)
-	//{
-	//	fgets(number, 20, f);
-	//	for (count; number[count] != '\0'; count++)
-	//	{
-	//		count++;
-	//	}
-	//	count++;
-	//	//Check to see if there is a user, by looking for the S in SOONER\4x4
-	//	if (number[0] == 'S')
-	//	{
-	//		int j = 0;
-	//		for (int i = 7; i < 15; i++)
-	//		{
-	//			out[j] = number[i];
-	//			j++;
-	//		}
-	//		out[j] = '\0';
-	//		setStatus(Status(InUse));
-	//		setUser(out);
-	//	}
-	//	//If computer is off by looking for the E in ERROR
-	//	else if (number[0] == 'E')
-	//	{
-	//		setStatus(Status(Unknown));
-	//	}
-	//	//Computer is not in use
-	//	else
-	//	{
-	//		setStatus(Status(Available));
-	//	}
-	//	index++;
-	//	if (index == 1)
-	//	{
-	//		break;
-	//	}
-	//}
-	//_pclose(f);
 }
 
 void Computer::remoteDesktop()
