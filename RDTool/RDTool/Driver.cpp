@@ -50,6 +50,7 @@ int main()
 
 	//Set the name for the input file name
 	inputFileName = "SP18 Computer List.csv";
+	//inputFileName = "test.csv";
 
 	//Create input file object
 	fstream inputFile(inputFileName);
@@ -98,9 +99,8 @@ int main()
 
 	//Displays tree
 	cout << "************************************************************" << endl;
-	//testerino->inOrderDisplay();
-	//testerino->checkStatus();
-	//This will let you see whats going on
+
+
 	//system("PAUSE");
 	RDTool::MainWindow form(testerino);
 	HANDLE thread = CreateThread(NULL, 0, Check, NULL, 0, NULL);
