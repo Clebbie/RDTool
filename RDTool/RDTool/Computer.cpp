@@ -162,7 +162,6 @@ string runCommand(string cmd)
 			try
 			{
 				while (!feof(pipe))
-				{
 					if (fgets(buffer, 128, pipe) != NULL)
 					{
 						result += buffer;
@@ -177,11 +176,8 @@ string runCommand(string cmd)
 		}
 		return result;
 
-		CloseHandle(pi.hProcess);
-		CloseHandle(pi.hThread);
 	}
 }
-
 
 void Computer::checkUser()
 {
@@ -207,10 +203,6 @@ void Computer::checkUser()
 	{
 		setStatus(Status(Available));
 	}
-
-	
-	cout << *this << endl;
-	cout << "*********************************************************" << endl;
 }
 
 void Computer::remoteDesktop()
