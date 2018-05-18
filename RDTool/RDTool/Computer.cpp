@@ -162,6 +162,7 @@ string runCommand(string cmd)
 			try
 			{
 				while (!feof(pipe))
+				{
 					if (fgets(buffer, 128, pipe) != NULL)
 					{
 						result += buffer;
