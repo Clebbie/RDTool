@@ -56,6 +56,10 @@ namespace RDTool
 	private: System::Windows::Forms::Button^  remoteButton;
 	private: System::Windows::Forms::Button^  test;
 	private: static System::Windows::Forms::FlowLayoutPanel^  computerDisplay;
+	private: System::Windows::Forms::MenuStrip^  menuStrip1;
+	private: System::Windows::Forms::ToolStripMenuItem^  commandToolStripMenuItem;
+
+
 	private: RDTool::Timer tCheck;
 
 	public: System::Windows::Forms::Panel^ createPanel(System::String^ name, System::String^ status, System::Windows::Forms::FlowLayoutPanel^ display);
@@ -86,16 +90,20 @@ namespace RDTool
 			this->computerDisplay = (gcnew System::Windows::Forms::FlowLayoutPanel());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->test = (gcnew System::Windows::Forms::Button());
+			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
+			this->commandToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// computerTree
 			// 
 			this->computerTree->CheckBoxes = true;
 			this->computerTree->Dock = System::Windows::Forms::DockStyle::Left;
-			this->computerTree->Location = System::Drawing::Point(0, 0);
+			this->computerTree->Location = System::Drawing::Point(0, 24);
 			this->computerTree->Name = L"computerTree";
+			this->computerTree->RightToLeftLayout = true;
 			this->computerTree->ShowNodeToolTips = true;
-			this->computerTree->Size = System::Drawing::Size(188, 1041);
+			this->computerTree->Size = System::Drawing::Size(188, 1017);
 			this->computerTree->TabIndex = 0;
 			this->computerTree->AfterCheck += gcnew System::Windows::Forms::TreeViewEventHandler(this, &MainWindow::computerTree_AfterSelect);
 			this->computerTree->AfterSelect += gcnew System::Windows::Forms::TreeViewEventHandler(this, &MainWindow::computerTree_AfterSelect_1);
@@ -104,9 +112,9 @@ namespace RDTool
 			// 
 			this->computerDisplay->AutoScroll = true;
 			this->computerDisplay->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->computerDisplay->Location = System::Drawing::Point(188, 0);
+			this->computerDisplay->Location = System::Drawing::Point(188, 24);
 			this->computerDisplay->Name = L"computerDisplay";
-			this->computerDisplay->Size = System::Drawing::Size(1716, 1041);
+			this->computerDisplay->Size = System::Drawing::Size(1716, 1017);
 			this->computerDisplay->TabIndex = 1;
 			// 
 			// label1
@@ -127,6 +135,22 @@ namespace RDTool
 			this->test->Size = System::Drawing::Size(75, 23);
 			this->test->TabIndex = 0;
 			// 
+			// menuStrip1
+			// 
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->commandToolStripMenuItem });
+			this->menuStrip1->Location = System::Drawing::Point(0, 0);
+			this->menuStrip1->Name = L"menuStrip1";
+			this->menuStrip1->Size = System::Drawing::Size(1904, 24);
+			this->menuStrip1->TabIndex = 2;
+			this->menuStrip1->Text = L"menuStrip1";
+			// 
+			// commandToolStripMenuItem
+			// 
+			this->commandToolStripMenuItem->Name = L"commandToolStripMenuItem";
+			this->commandToolStripMenuItem->Size = System::Drawing::Size(76, 20);
+			this->commandToolStripMenuItem->Text = L"Command";
+			this->commandToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::commandToolStripMenuItem_Click);
+			// 
 			// MainWindow
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -135,9 +159,14 @@ namespace RDTool
 			this->ClientSize = System::Drawing::Size(1904, 1041);
 			this->Controls->Add(this->computerDisplay);
 			this->Controls->Add(this->computerTree);
+			this->Controls->Add(this->menuStrip1);
+			this->MainMenuStrip = this->menuStrip1;
 			this->Name = L"MainWindow";
 			this->Text = L"RDTool";
+			this->menuStrip1->ResumeLayout(false);
+			this->menuStrip1->PerformLayout();
 			this->ResumeLayout(false);
+			this->PerformLayout();
 
 		}
 #pragma endregion
@@ -147,6 +176,8 @@ namespace RDTool
 		
 	private: System::Void computerTree_AfterSelect(System::Object^  sender, System::Windows::Forms::TreeViewEventArgs^  e)
 	{
+		this->computerTree->UseWaitCursor = true;
+		this->computerDisplay->UseWaitCursor = true;
 		//College level selected
 		if (e->Node->Level == 0)
 		{
@@ -259,6 +290,9 @@ namespace RDTool
 
 			}
 		}
+		this->computerTree->UseWaitCursor = false;
+		this->computerDisplay->UseWaitCursor = false;
+
 	}
 			 //This is the event listener for the remote button
 	public: System::Void remoteButton_Click(System::Object^  sender, System::EventArgs^  e)
@@ -292,6 +326,18 @@ namespace RDTool
 		selectedTree->find(name)->getInfo()->turnOn();
 	}
 private: System::Void computerTree_AfterSelect_1(System::Object^  sender, System::Windows::Forms::TreeViewEventArgs^  e) {
+}
+private: System::Void commandToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+
+	//System::Windows::Forms::CommonDialog^ dialog = gcnew CommonDialog();
+	
+	Label^ instruction = gcnew Label();
+	instruction->Text = L"Type the command";
+	TextBox^ cmd = gcnew TextBox();
+	cmd->AcceptsReturn = true;
+	//dialog->Container->Add(instruction);
+	//dialog->Container->Add(cmd);
+	// DialogBox(NULL, NULL, NULL, NULL);
 }
 };
 

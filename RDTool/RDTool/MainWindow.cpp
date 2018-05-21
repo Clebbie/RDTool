@@ -4,6 +4,8 @@ using namespace System;
 
 void RDTool::MainWindow::populateViewTree(ComputerTree<Computer>* tree, System::Windows::Forms::TreeView ^ view)
 {
+	
+
 	//throw gcnew System::NotImplementedException();
 	string currentCollege = "";
 	string currentLab = "";
@@ -65,7 +67,6 @@ void RDTool::MainWindow::paintPanels(ComputerTree<Computer>* tree)
 	//Need to traverse the layout getting the status of each one
 	//probably by looking for key words (i.e. available, In use, Unknown)
 	//then needs to update the status label and paint the panel.
-
 	if (tree->getInfo() != nullptr)
 	{
 		paintPanels(tree->getLeft());

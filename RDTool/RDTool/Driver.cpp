@@ -20,6 +20,7 @@ DWORD WINAPI Check(void *)
 		RDTool::MainWindow::paintPanels(RDTool::MainWindow::selectedTree);
 		//RDTool::MainWindow::paintPanels();
 		cout << "Done. Now sleeping :3" << endl;
+		
 		Sleep(60000);
 	}
 	return 0;

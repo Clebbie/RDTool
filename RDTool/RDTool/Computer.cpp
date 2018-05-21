@@ -162,6 +162,7 @@ string runCommand(string cmd)
 			try
 			{
 				while (!feof(pipe))
+				{
 					if (fgets(buffer, 128, pipe) != NULL)
 					{
 						result += buffer;
@@ -185,23 +186,30 @@ void Computer::checkUser()
 	string cmd = "wmic /node:\"" + _name + "\" computersystem get username";		//Runs the command to find a user on a PC
 
 	string result = runCommand(cmd);
+	int newLine = -1;
+	newLine = result.find('\\');
+
 	
 	string user;
-
-	if (result.find("SOONER") != string::npos)
-	{
-		setStatus(Status(InUse));
-		user = result.substr(result.find('R') + 2, 8);
-		setUser(user);
-	}
-	//else if (result.find('E') != string::npos)
-	else if (result == "Computer in Error State!")
+	//result.find("SOONER") != string::npos
+	if (result == "Computer in Error State!")
 	{
 		setStatus(Status(Unknown));
 	}
+	else if (newLine == string::npos)
+	{
+		cout << "This is available" << endl;
+		setStatus(Status(Available));
+	}
+	//else if (result.find('E') != string::npos)
+	
 	else
 	{
-		setStatus(Status(Available));
+		setStatus(Status(InUse));
+		//user = result.substr(result.find('R') + 2, 8);
+		
+		user = result.substr(newLine + 1, 10);
+		setUser(user);
 	}
 }
 
