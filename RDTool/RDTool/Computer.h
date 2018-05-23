@@ -27,7 +27,7 @@ public:
 
 	//getters
 	string getName();
-	string* getUser();
+	string getUser();
 	string getMac();
 	string getIP();
 	int getStatus();
@@ -53,6 +53,7 @@ public:
 	void display();
 	string getLab();
 	string getCollege();
+	string runCommand(string cmd);
 
 	bool operator <(Computer& comp);
 	bool operator >(Computer& comp);

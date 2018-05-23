@@ -135,6 +135,7 @@
     <ClCompile Include="Computer.cpp" />
     <ClCompile Include="Driver.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="RunCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Computer.h" />
@@ -142,11 +143,17 @@
     <ClInclude Include="MainWindow.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="RunCommand.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RunCommand.resx">
+      <DependentUpon>RunCommand.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

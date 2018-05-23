@@ -4,7 +4,7 @@ using namespace System;
 
 void RDTool::MainWindow::populateViewTree(ComputerTree<Computer>* tree, System::Windows::Forms::TreeView ^ view)
 {
-	
+
 
 	//throw gcnew System::NotImplementedException();
 	string currentCollege = "";
@@ -32,7 +32,7 @@ void RDTool::MainWindow::populateViewTree(ComputerTree<Computer>* tree, System::
 			//Check to see if the college already exisits
 			if (!view->Nodes->ContainsKey(collegeKey))
 			{
-				view->Nodes->Add(collegeKey,collegeKey);
+				view->Nodes->Add(collegeKey, collegeKey);
 			}
 		}
 		//check to see if the computer's lab is the same..
@@ -50,7 +50,7 @@ void RDTool::MainWindow::populateViewTree(ComputerTree<Computer>* tree, System::
 		//Add the computer
 		computerKey = gcnew String(currentComputer->getName().c_str());
 		cli::array<TreeNode^>^ found = view->Nodes->Find(collegeKey, false);
-		
+
 		cli::array<TreeNode^>^ found2 = found[0]->Nodes->Find(labKey, false);
 		found2[0]->Nodes->Add(computerKey, computerKey);
 	}
@@ -58,7 +58,7 @@ void RDTool::MainWindow::populateViewTree(ComputerTree<Computer>* tree, System::
 	{
 		populateViewTree(tree->getRight(), view);
 	}
-	
+
 }
 
 void RDTool::MainWindow::paintPanels(ComputerTree<Computer>* tree)
@@ -74,6 +74,9 @@ void RDTool::MainWindow::paintPanels(ComputerTree<Computer>* tree)
 	if (tree->getInfo() != nullptr)
 	{
 		int status = tree->getInfo()->getStatus();
+		String^ user;
+		string rawUser;
+		string userName = tree->getInfo()->getUser();
 		string rawName = tree->getInfo()->getName();
 		String^ name = gcnew String(rawName.c_str());
 		Color a;
@@ -81,27 +84,45 @@ void RDTool::MainWindow::paintPanels(ComputerTree<Computer>* tree)
 		{
 			//Set color to yellow
 			a = System::Drawing::Color::FromArgb(255, 240, 230, 140);
+			rawUser = "In use by: ";
+			rawUser += userName;
 		}
 		else if (status == 2)
 		{
 			//Set color to red
-			 a = System::Drawing::Color::FromArgb(255, 250, 128, 114);
+			a = System::Drawing::Color::FromArgb(255, 250, 128, 114);
+			rawUser = "Unavailable";
 		}
 		else
 		{
 			//Set color to Green
 			a = System::Drawing::Color::FromArgb(255, 144, 238, 144);
+			rawUser = "Available";
 		}
-		auto comp = computerDisplay->Controls->Find(name, false);
+		user = gcnew String(rawUser.c_str());
+		auto comp = MainWindow::computerDisplay->Controls->Find(name, false);
+
 		comp[0]->BackColor = a;
-		
+		auto temp = comp[0]->Controls->Find(L"computerStatus", true);
+		temp[0]->Text = user;
+
+
 	}
 	if (tree->getRight() != nullptr)
 	{
 		paintPanels(tree->getRight());
 	}
-	
+
 }
+
+void RDTool::MainWindow::runCommand(String^ cmd)
+{
+	//throw gcnew System::NotImplementedException();
+	string command = msclr::interop::marshal_as<std::string>(cmd);
+	selectedTree->runCommand(command);
+}
+
+
 
 System::Windows::Forms::Panel^ RDTool::MainWindow::createPanel(System::String ^ name, System::String ^ status, System::Windows::Forms::FlowLayoutPanel ^ display)
 {
@@ -117,7 +138,7 @@ System::Windows::Forms::Panel^ RDTool::MainWindow::createPanel(System::String ^ 
 	// 
 	// computerStatus
 	// 
-	System::Windows::Forms::Label^ computerStatus= gcnew Label();
+	System::Windows::Forms::Label^ computerStatus = gcnew Label();
 	computerStatus->AutoSize = true;
 	computerStatus->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 		static_cast<System::Byte>(0)));
@@ -153,7 +174,7 @@ System::Windows::Forms::Panel^ RDTool::MainWindow::createPanel(System::String ^ 
 	magicButton->Size = System::Drawing::Size(75, 23);
 	magicButton->Text = L"Magic Packets";
 	magicButton->UseVisualStyleBackColor = true;
-	
+
 	//Panel that will be returned
 	Panel^ pan = gcnew Panel();
 	//Setting properties of the pannel and adding information onto it
@@ -171,10 +192,10 @@ System::Windows::Forms::Panel^ RDTool::MainWindow::createPanel(System::String ^ 
 	//
 	//Color
 	//
-	
+
 	if (status[0] == ' ')
 	{
-		
+
 		pan->BackColor = System::Drawing::Color::FromArgb(255, 240, 230, 140);
 	}
 	else if (status[0] == 'U')
@@ -192,10 +213,10 @@ System::Windows::Forms::Panel^ RDTool::MainWindow::createPanel(System::String ^ 
 	display->Padding.All = 10;
 	return pan;
 
-	
-	
+
+
 }
 
- 
+
 
 

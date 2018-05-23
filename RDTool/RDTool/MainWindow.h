@@ -4,6 +4,7 @@
 #include <msclr\marshal_cppstd.h>
 #include <chrono>
 #include<Windows.h>
+#include"RunCommand.h"
 
 
 namespace RDTool
@@ -30,11 +31,18 @@ namespace RDTool
 			selectedTree = new ComputerTree<Computer>();
 			InitializeComponent();
 			populateViewTree(tree, computerTree);
-			
-			
-			
+
+
+
 			//computerTree->Update();
 		}
+	private: System::Windows::Forms::TextBox^  cmdBox;
+	public:
+		static System::String^ cmd;
+		System::Windows::Forms::Panel^ createPanel(System::String^ name, System::String^ status, System::Windows::Forms::FlowLayoutPanel^ display);
+		void populateViewTree(ComputerTree<Computer>* tree, System::Windows::Forms::TreeView ^ view);
+		static void paintPanels(ComputerTree<Computer>* tree);
+		static void runCommand(String^ cmd);
 
 	protected:
 		/// <summary>
@@ -47,33 +55,22 @@ namespace RDTool
 				delete components;
 			}
 		}
-		
-	private: System::Windows::Forms::TreeView^  computerTree;
-			 ComputerTree<Computer>* _tree;
-
-	private: System::Windows::Forms::Label^  label1;
-			 //private: System::Windows::Forms::Button^  labViewButton;
-	private: System::Windows::Forms::Button^  remoteButton;
-	private: System::Windows::Forms::Button^  test;
-	private: static System::Windows::Forms::FlowLayoutPanel^  computerDisplay;
-	private: System::Windows::Forms::MenuStrip^  menuStrip1;
-	private: System::Windows::Forms::ToolStripMenuItem^  commandToolStripMenuItem;
-
-
-	private: RDTool::Timer tCheck;
-
-	public: System::Windows::Forms::Panel^ createPanel(System::String^ name, System::String^ status, System::Windows::Forms::FlowLayoutPanel^ display);
-
-
-
-
-	protected:
-
-	protected:
-
-	protected:
 
 	private:
+		System::Windows::Forms::TreeView^  computerTree;
+		ComputerTree<Computer>* _tree;
+
+		System::Windows::Forms::Label^  label1;
+		//private: System::Windows::Forms::Button^  labViewButton;
+		System::Windows::Forms::Button^  remoteButton;
+		System::Windows::Forms::Button^  test;
+	private: static System::Windows::Forms::FlowLayoutPanel^  computerDisplay;
+
+
+
+		System::Windows::Forms::MenuStrip^  menuStrip1;
+		System::Windows::Forms::ToolStripMenuItem^  commandToolStripMenuItem;
+
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -92,6 +89,7 @@ namespace RDTool
 			this->test = (gcnew System::Windows::Forms::Button());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->commandToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->cmdBox = (gcnew System::Windows::Forms::TextBox());
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -106,12 +104,13 @@ namespace RDTool
 			this->computerTree->Size = System::Drawing::Size(188, 1017);
 			this->computerTree->TabIndex = 0;
 			this->computerTree->AfterCheck += gcnew System::Windows::Forms::TreeViewEventHandler(this, &MainWindow::computerTree_AfterSelect);
-			this->computerTree->AfterSelect += gcnew System::Windows::Forms::TreeViewEventHandler(this, &MainWindow::computerTree_AfterSelect_1);
 			// 
 			// computerDisplay
 			// 
 			this->computerDisplay->AutoScroll = true;
 			this->computerDisplay->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->computerDisplay->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->computerDisplay->Location = System::Drawing::Point(188, 24);
 			this->computerDisplay->Name = L"computerDisplay";
 			this->computerDisplay->Size = System::Drawing::Size(1716, 1017);
@@ -151,12 +150,22 @@ namespace RDTool
 			this->commandToolStripMenuItem->Text = L"Command";
 			this->commandToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::commandToolStripMenuItem_Click);
 			// 
+			// cmdBox
+			// 
+			this->cmdBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->cmdBox->Location = System::Drawing::Point(188, -3);
+			this->cmdBox->Name = L"cmdBox";
+			this->cmdBox->Size = System::Drawing::Size(1716, 27);
+			this->cmdBox->TabIndex = 3;
+			// 
 			// MainWindow
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::SystemColors::Control;
 			this->ClientSize = System::Drawing::Size(1904, 1041);
+			this->Controls->Add(this->cmdBox);
 			this->Controls->Add(this->computerDisplay);
 			this->Controls->Add(this->computerTree);
 			this->Controls->Add(this->menuStrip1);
@@ -170,10 +179,8 @@ namespace RDTool
 
 		}
 #pragma endregion
-		void populateViewTree(ComputerTree<Computer>* tree, System::Windows::Forms::TreeView ^ view);
-		
-		public: static void paintPanels(ComputerTree<Computer>* tree);
-		
+
+
 	private: System::Void computerTree_AfterSelect(System::Object^  sender, System::Windows::Forms::TreeViewEventArgs^  e)
 	{
 		this->computerTree->UseWaitCursor = true;
@@ -257,7 +264,7 @@ namespace RDTool
 				if (status == 1)
 				{
 					string foo = " In use by: ";
-					string bar = temp->getInfo()->getUser()->c_str();
+					string bar = temp->getInfo()->getUser();
 					foo += bar;
 					labelStatus = gcnew String(foo.c_str());
 				}
@@ -271,7 +278,7 @@ namespace RDTool
 				}
 				//This creates the panel then checks the user of the panel;
 				Panel^ test = createPanel(labelName, labelStatus, computerDisplay);
-				
+
 				//Adds the panel to the display
 				computerDisplay->Controls->Add(test);
 
@@ -325,22 +332,24 @@ namespace RDTool
 		string name = msclr::interop::marshal_as<std::string>(ctrl->Parent->Name->ToString());
 		selectedTree->find(name)->getInfo()->turnOn();
 	}
-private: System::Void computerTree_AfterSelect_1(System::Object^  sender, System::Windows::Forms::TreeViewEventArgs^  e) {
-}
-private: System::Void commandToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	private: System::Void commandToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e)
+	{
 
-	//System::Windows::Forms::CommonDialog^ dialog = gcnew CommonDialog();
-	
-	Label^ instruction = gcnew Label();
-	instruction->Text = L"Type the command";
-	TextBox^ cmd = gcnew TextBox();
-	cmd->AcceptsReturn = true;
-	//dialog->Container->Add(instruction);
-	//dialog->Container->Add(cmd);
-	// DialogBox(NULL, NULL, NULL, NULL);
-}
-};
+		//System::Windows::Forms::CommonDialog^ dialog = gcnew CommonDialog();
 
+
+		//MessageBoxButtons = MessageBoxButtons.YesNo;
+		/*RunCommand dlg;
+		dlg.ShowDialog();*/
+		//selectedTree->runCommand(command);
+		//test.AcceptsReturn = true;
+		//
+		//result = MessageBox::Show(this, message, caption, buttons);
+		string command = msclr::interop::marshal_as<std::string>(cmdBox->Text);
+		selectedTree->generateReport(command);
+		cmdBox->Text = L"";
+	}
+	};
 }
 
 

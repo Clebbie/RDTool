@@ -2,11 +2,13 @@
 // Microsoft Visual C++ generated include file.
 // Used by RDTool.rc
 //
+
+
 #define IDD_FORMVIEW                    101
 #define IDC_EDIT1                       1003
 #define IDC_BUTTON1                     1004
+#define runCommand                      1004
 #define IDC_BUTTON2                     1005
-#define IDC_STATIC                      -1
 
 // Next default values for new objects
 // 

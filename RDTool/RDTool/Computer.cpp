@@ -73,9 +73,9 @@ string Computer::getName()
 	return _name;
 }
 
-string* Computer::getUser()
+string Computer::getUser()
 {
-	return &_user;
+	return _user;
 }
 
 string Computer::getMac()
@@ -112,12 +112,19 @@ char* Computer::deepCopy(string cString)
 	return out;
 }
 
-string runCommand(string cmd)
+string Computer::runCommand(string cmd)
 {
-	TCHAR *param = new TCHAR[cmd.size() + 1];
-	param[cmd.size()] = 0;
+	int size = cmd.size();
+	string command = "";
+	command += cmd.substr(0, 4);
+	//copy(cmd.begin(), cmd.end(), command);
+	command += " /node:\"" + _name;
+	command += "\" ";
+	command += cmd.substr(5, size);
+	TCHAR *param = new TCHAR[command.size() + 1];
+	param[command.size()] = 0;
 
-	copy(cmd.begin(), cmd.end(), param);
+	copy(command.begin(), command.end(), param);
 
 	BOOL bSuccess = false;
 	STARTUPINFO si;
@@ -145,6 +152,7 @@ string runCommand(string cmd)
 	if (!bSuccess)
 	{
 		cout << "Process failed" << endl;
+		cout << command << endl;
 		ExitProcess(1);
 	}
 	else
@@ -153,7 +161,8 @@ string runCommand(string cmd)
 		{
 			char buffer[128];
 			result = "";
-			const char* charCommand = cmd.c_str();
+			const char* charCommand = command.c_str();
+			//TODO: Stop running the commmand twice. Find a way to get the out put from hStdOutput
 
 			//cout << "get into exec" << endl;
 
@@ -183,10 +192,10 @@ string runCommand(string cmd)
 void Computer::checkUser()
 {
 	//Runs the command to find a user on a PC
-	string cmd = "wmic /node:\"" + _name + "\" computersystem get username";		//Runs the command to find a user on a PC
+	string cmd = "wmic computersystem get username";		//Runs the command to find a user on a PC
 
 	string result = runCommand(cmd);
-	int newLine = -1;
+	int newLine = string::npos;
 	newLine = result.find('\\');
 
 	
@@ -353,11 +362,11 @@ int Computer::turnOn()
 ostream & operator<<(ostream & os, Computer & comp)
 {
 	int compStatus = comp.getStatus();
-	string* foo = comp.getUser();
+	string foo = comp.getUser();
 	os << "Computer: " << comp.getName() << "\nIP: " << comp.getIP() << "\nMac: " << comp.getMac() << "\n" << comp.getLab() << "\n" << comp.getCollege() << "\n";
 	if (compStatus == 1)
 	{
-		os << "In use by: " << (*foo) << endl;
+		os << "In use by: " << (foo) << endl;
 	}
 	else if (compStatus == 2)
 	{

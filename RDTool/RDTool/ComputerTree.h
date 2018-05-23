@@ -33,10 +33,10 @@ public:
 	void zig();
 	void zag();
 	void inOrderDisplay();
-	void writeFile(ofstream& outputFile);
+	void writeFile(ofstream& outputFile,string cmd);
 	void preOrderDisplay();
-	void documentTreeTraversal(ofstream& outputFile);
-	void generateReport();
+	void documentTreeTraversal(ofstream& outputFile,string cmd);
+	void generateReport(string cmd);
 	string runCommand(string cmd);
 	void displayIP();
 	void traverseIP();
@@ -302,11 +302,13 @@ inline void ComputerTree<DT>::display()
 }
 
 template<class DT>
-inline void ComputerTree<DT>::writeFile(ofstream& outputFile)
+inline void ComputerTree<DT>::writeFile(ofstream& outputFile, string cmd)
 {
 	//outputFile << (*this) << endl;
-	outputFile << (*_info).getName() << "," << (*_info).getIP() << "," << (*_info).getMac() << endl;
-	cout << "Writing computer: " << (*_info).getName() << endl;
+	outputFile << (*_info).getName() << endl;
+	string report = _info->runCommand(cmd);
+	outputFile << report << endl;
+	//cout << "Writing computer: " << (*_info).getName() << endl;
 
 }
 
@@ -393,28 +395,42 @@ inline void ComputerTree<DT>::preOrderDisplay()
 }
 
 template<class DT>
-inline void ComputerTree<DT>::documentTreeTraversal(ofstream& outputFile)
+inline void ComputerTree<DT>::documentTreeTraversal(ofstream& outputFile, string cmd)
 {
 	if ((*_left)._info != nullptr)
 	{
-		_left->documentTreeTraversal(outputFile);
+		_left->documentTreeTraversal(outputFile,cmd);
 	}
 	if (_info != nullptr)
 	{
 		//_info->writeFile(outputFile);
-		writeFile(outputFile);
+		writeFile(outputFile,cmd);
 	}
 	if ((*_right)._info != nullptr)
 	{
-		_right->documentTreeTraversal(outputFile);
+		_right->documentTreeTraversal(outputFile,cmd);
 	}
 }
 
 template<class DT>
-inline void ComputerTree<DT>::generateReport()
+inline void ComputerTree<DT>::generateReport(string cmd)
 {
 	//Name the output file
-	string outputFileName = "RDTool Report.csv";
+	string userProfile = "echo %userprofile%";
+	string outputFileName = "";
+	char buffer[128];
+	FILE* f = _popen(userProfile.c_str(), "r");
+	while (!feof(f))
+	{
+		if (fgets(buffer, 128, f) != NULL)
+		{
+			outputFileName += buffer;
+		}
+	}
+	int endLine = outputFileName.find_last_of('\n');
+	outputFileName = outputFileName.substr(0, endLine);
+	outputFileName += "\\RDTool Report.csv";
+
 
 	//Create the file output object
 	ofstream outputFile(outputFileName);
@@ -423,7 +439,7 @@ inline void ComputerTree<DT>::generateReport()
 	{
 		outputFile << "Computer Name, IP Address, MAC Address" << endl;
 
-		documentTreeTraversal(outputFile);
+		documentTreeTraversal(outputFile, cmd);
 
 		outputFile.close();
 	}
@@ -438,69 +454,20 @@ inline void ComputerTree<DT>::generateReport()
 template<class DT>
 inline string ComputerTree<DT>::runCommand(string cmd)
 {
-	TCHAR *param = new TCHAR[cmd.size() + 1];
-	param[cmd.size()] = 0;
-
-	copy(cmd.begin(), cmd.end(), param);
-
-	BOOL bSuccess = false;
-	STARTUPINFO si;
-	PROCESS_INFORMATION pi;
-	string result = "Computer in Error State";
-
-	ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
-
-	ZeroMemory(&si, sizeof(STARTUPINFO));
-	si.cb = sizeof(STARTUPINFO);
-
-	bSuccess = CreateProcess(NULL,
-		param,
-		NULL,
-		NULL,
-		TRUE,
-		0,
-		NULL,
-		NULL,
-		&si,
-		&pi);
-
-	WaitForSingleObject(pi.hProcess, 1000);
-
-	if (!bSuccess)
+	if ((*_left)._info != nullptr)
 	{
-		const char* commando = cmd.c_str();
-		char buffer[128];
-		string result = "";
-
-		//cout << "get into exec" << endl;
-
-		FILE* pipe = _popen(commando, "r");
-		if (!pipe) throw runtime_error("_popen() failed!");
-		try
-		{
-			while (!feof(pipe))
-			{
-				if (fgets(buffer, 128, pipe) != NULL)
-				{
-					result += buffer;
-				}
-			}
-		}
-		catch (...) {
-			_pclose(pipe);
-			throw;
-		}
-		_pclose(pipe);
+		_left->runCommand(cmd);
 	}
-	else
+	if (_info != nullptr)
 	{
-		result = "computer in error";
-
-		CloseHandle(pi.hProcess);
-		CloseHandle(pi.hThread);
+		//_info->write();
 	}
-
-	return result;
+	if ((*_right)._info != nullptr)
+	{
+		_right->traverseIP();
+		cout << endl;
+	}
+	return "duh";
 }
 
 template<class DT>
