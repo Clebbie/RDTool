@@ -4,9 +4,6 @@ using namespace System;
 
 void RDTool::MainWindow::populateViewTree(ComputerTree<Computer>* tree, System::Windows::Forms::TreeView ^ view)
 {
-
-
-	//throw gcnew System::NotImplementedException();
 	string currentCollege = "";
 	string currentLab = "";
 	Computer* currentComputer;
@@ -63,56 +60,75 @@ void RDTool::MainWindow::populateViewTree(ComputerTree<Computer>* tree, System::
 
 void RDTool::MainWindow::paintPanels(ComputerTree<Computer>* tree)
 {
-	//TODO: Write the paint panels method
-	//Need to traverse the layout getting the status of each one
-	//probably by looking for key words (i.e. available, In use, Unknown)
-	//then needs to update the status label and paint the panel.
-	if (tree->getInfo() != nullptr)
+	if (!isRemoving)
 	{
-		paintPanels(tree->getLeft());
-	}
-	if (tree->getInfo() != nullptr)
-	{
-		int status = tree->getInfo()->getStatus();
-		String^ user;
-		string rawUser;
-		string userName = tree->getInfo()->getUser();
-		string rawName = tree->getInfo()->getName();
-		String^ name = gcnew String(rawName.c_str());
-		Color a;
-		if (status == 1)
+		//Need to traverse the layout getting the status of each one
+		//probably by looking for key words (i.e. available, In use, Unknown)
+		//then needs to update the status label and paint the panel.
+		if (tree->getInfo() != nullptr)
 		{
-			//Set color to yellow
-			a = System::Drawing::Color::FromArgb(255, 240, 230, 140);
-			rawUser = "In use by: ";
-			rawUser += userName;
+			if (!isRemoving)
+			{
+				paintPanels(tree->getLeft());
+			}
+			else
+			{
+				return;
+			}
 		}
-		else if (status == 2)
+		if (tree->getInfo() != nullptr)
 		{
-			//Set color to red
-			a = System::Drawing::Color::FromArgb(255, 250, 128, 114);
-			rawUser = "Unavailable";
+			if (!isRemoving)
+			{
+
+
+				int status = tree->getInfo()->getStatus();
+				String^ user;
+				string rawUser;
+				string userName = tree->getInfo()->getUser();
+				string rawName = tree->getInfo()->getName();
+				String^ name = gcnew String(rawName.c_str());
+				Color a;
+				if (status == 1)
+				{
+					//Set color to yellow
+					a = System::Drawing::Color::FromArgb(255, 240, 230, 140);
+					rawUser = "In use by: ";
+					rawUser += userName;
+				}
+				else if (status == 2)
+				{
+					//Set color to red
+					a = System::Drawing::Color::FromArgb(255, 250, 128, 114);
+					rawUser = "Unavailable";
+				}
+				else
+				{
+					//Set color to Green
+					a = System::Drawing::Color::FromArgb(255, 144, 238, 144);
+					rawUser = "Available";
+				}
+				user = gcnew String(rawUser.c_str());
+				auto comp = MainWindow::computerDisplay->Controls->Find(name, false);
+
+				comp[0]->BackColor = a;
+				auto temp = comp[0]->Controls->Find(L"computerStatus", true);
+				temp[0]->Text = user;
+			}
+			else
+			{
+				return;
+			}
 		}
-		else
+		if (tree->getRight() != nullptr)
 		{
-			//Set color to Green
-			a = System::Drawing::Color::FromArgb(255, 144, 238, 144);
-			rawUser = "Available";
+			if (!isRemoving)
+			{
+				paintPanels(tree->getRight());
+
+			}
 		}
-		user = gcnew String(rawUser.c_str());
-		auto comp = MainWindow::computerDisplay->Controls->Find(name, false);
-
-		comp[0]->BackColor = a;
-		auto temp = comp[0]->Controls->Find(L"computerStatus", true);
-		temp[0]->Text = user;
-
-
 	}
-	if (tree->getRight() != nullptr)
-	{
-		paintPanels(tree->getRight());
-	}
-
 }
 
 void RDTool::MainWindow::runCommand(String^ cmd)
@@ -142,7 +158,7 @@ System::Windows::Forms::Panel^ RDTool::MainWindow::createPanel(System::String ^ 
 	computerStatus->AutoSize = true;
 	computerStatus->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 		static_cast<System::Byte>(0)));
-	computerStatus->Location = System::Drawing::Point(140, 15);
+	computerStatus->Location = System::Drawing::Point(160, 15);
 	computerStatus->Name = L"computerStatus";
 	computerStatus->Size = System::Drawing::Size(120, 22);
 	computerStatus->Text = status;

@@ -304,12 +304,24 @@ inline void ComputerTree<DT>::display()
 template<class DT>
 inline void ComputerTree<DT>::writeFile(ofstream& outputFile, string cmd)
 {
-	//outputFile << (*this) << endl;
-	outputFile << (*_info).getName() << endl;
-	string report = _info->runCommand(cmd);
+	//Writes the computer name opening tag
+	outputFile << "<" << (*_info).getName() << ">";
+	outputFile << "<Output>";
+	string report;
+	//if the computer is unknown status then don't run the command
+	if (_info->getStatus() == 2)
+	{
+		report = "Computer in Error State!";
+	}
+	else
+	{
+		report = _info->runCommand(cmd,false);
+	}
+	//Write the report
 	outputFile << report << endl;
-	//cout << "Writing computer: " << (*_info).getName() << endl;
-
+	//Close all tags
+	outputFile << "</Output>";
+	outputFile << "</" << _info->getName() << ">";
 }
 
 template<class DT>
@@ -403,7 +415,6 @@ inline void ComputerTree<DT>::documentTreeTraversal(ofstream& outputFile, string
 	}
 	if (_info != nullptr)
 	{
-		//_info->writeFile(outputFile);
 		writeFile(outputFile,cmd);
 	}
 	if ((*_right)._info != nullptr)
@@ -415,10 +426,11 @@ inline void ComputerTree<DT>::documentTreeTraversal(ofstream& outputFile, string
 template<class DT>
 inline void ComputerTree<DT>::generateReport(string cmd)
 {
-	//Name the output file
+	//Set the output file to write to the desktop
 	string userProfile = "echo %userprofile%";
 	string outputFileName = "";
 	char buffer[128];
+	//Runs a command to get the users directory
 	FILE* f = _popen(userProfile.c_str(), "r");
 	while (!feof(f))
 	{
@@ -429,7 +441,8 @@ inline void ComputerTree<DT>::generateReport(string cmd)
 	}
 	int endLine = outputFileName.find_last_of('\n');
 	outputFileName = outputFileName.substr(0, endLine);
-	outputFileName += "\\RDTool Report.csv";
+	//Appends the desktop portion to the user profile
+	outputFileName += "\\Desktop\\RDTool Report.xml";
 
 
 	//Create the file output object
@@ -437,10 +450,11 @@ inline void ComputerTree<DT>::generateReport(string cmd)
 
 	if (outputFile.is_open())
 	{
-		outputFile << "Computer Name, IP Address, MAC Address" << endl;
-
+		//Starts the xml
+		outputFile << "<?xml version=\"1.0\"?><Command>";
+		//Traveres the tree passing the file and 
 		documentTreeTraversal(outputFile, cmd);
-
+		outputFile << "</Command>";
 		outputFile.close();
 	}
 	else

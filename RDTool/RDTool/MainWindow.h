@@ -31,18 +31,18 @@ namespace RDTool
 			selectedTree = new ComputerTree<Computer>();
 			InitializeComponent();
 			populateViewTree(tree, computerTree);
-
-
-
-			//computerTree->Update();
+			isRemoving = false;
 		}
 	private: System::Windows::Forms::TextBox^  cmdBox;
+	private: System::Windows::Forms::Label^  computerCountLabel;
+			 int numOfComputers = 0;
 	public:
 		static System::String^ cmd;
 		System::Windows::Forms::Panel^ createPanel(System::String^ name, System::String^ status, System::Windows::Forms::FlowLayoutPanel^ display);
 		void populateViewTree(ComputerTree<Computer>* tree, System::Windows::Forms::TreeView ^ view);
 		static void paintPanels(ComputerTree<Computer>* tree);
 		static void runCommand(String^ cmd);
+		static bool isRemoving;
 
 	protected:
 		/// <summary>
@@ -68,6 +68,9 @@ namespace RDTool
 
 
 
+
+
+
 		System::Windows::Forms::MenuStrip^  menuStrip1;
 		System::Windows::Forms::ToolStripMenuItem^  commandToolStripMenuItem;
 
@@ -90,6 +93,7 @@ namespace RDTool
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->commandToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->cmdBox = (gcnew System::Windows::Forms::TextBox());
+			this->computerCountLabel = (gcnew System::Windows::Forms::Label());
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -116,17 +120,6 @@ namespace RDTool
 			this->computerDisplay->Size = System::Drawing::Size(1716, 1017);
 			this->computerDisplay->TabIndex = 1;
 			// 
-			// label1
-			// 
-			this->label1->AutoSize = true;
-			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label1->Location = System::Drawing::Point(10, 15);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(277, 22);
-			this->label1->TabIndex = 0;
-			this->label1->Text = L"LS-ADMIN-02 in use by yarn0000";
-			// 
 			// test
 			// 
 			this->test->Location = System::Drawing::Point(0, 0);
@@ -152,12 +145,24 @@ namespace RDTool
 			// 
 			// cmdBox
 			// 
+			this->cmdBox->AcceptsReturn = true;
 			this->cmdBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->cmdBox->Location = System::Drawing::Point(188, -3);
 			this->cmdBox->Name = L"cmdBox";
-			this->cmdBox->Size = System::Drawing::Size(1716, 27);
+			this->cmdBox->Size = System::Drawing::Size(1417, 27);
 			this->cmdBox->TabIndex = 3;
+			// 
+			// computerCountLabel
+			// 
+			this->computerCountLabel->AutoSize = true;
+			this->computerCountLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->computerCountLabel->Location = System::Drawing::Point(1644, 0);
+			this->computerCountLabel->Name = L"computerCountLabel";
+			this->computerCountLabel->Size = System::Drawing::Size(176, 22);
+			this->computerCountLabel->TabIndex = 4;
+			this->computerCountLabel->Text = L"Computers loaded: 0";
 			// 
 			// MainWindow
 			// 
@@ -165,6 +170,7 @@ namespace RDTool
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::SystemColors::Control;
 			this->ClientSize = System::Drawing::Size(1904, 1041);
+			this->Controls->Add(this->computerCountLabel);
 			this->Controls->Add(this->cmdBox);
 			this->Controls->Add(this->computerDisplay);
 			this->Controls->Add(this->computerTree);
@@ -185,6 +191,7 @@ namespace RDTool
 	{
 		this->computerTree->UseWaitCursor = true;
 		this->computerDisplay->UseWaitCursor = true;
+		this->isRemoving = true;
 		//College level selected
 		if (e->Node->Level == 0)
 		{
@@ -281,7 +288,9 @@ namespace RDTool
 
 				//Adds the panel to the display
 				computerDisplay->Controls->Add(test);
-
+				numOfComputers++;
+				String^ computerCount = L"Computers Loaded: " + numOfComputers;
+				computerCountLabel->Text = computerCount;
 
 
 			}
@@ -291,14 +300,16 @@ namespace RDTool
 				string name = msclr::interop::marshal_as<std::string>(e->Node->Name);
 				ComputerTree<Computer>*temp = _tree->find(name);
 				String^ labelName = e->Node->Name;
-				//computerDisplay->Controls->RemoveByKey(labelName);
 				selectedTree->remove(temp->getInfo());
 				computerDisplay->Controls->RemoveByKey(e->Node->Name);
-
+				numOfComputers--;
+				String^ computerCount = L"Computers Loaded: " + numOfComputers;
+				computerCountLabel->Text = computerCount;
 			}
 		}
 		this->computerTree->UseWaitCursor = false;
 		this->computerDisplay->UseWaitCursor = false;
+		this->isRemoving = false;
 
 	}
 			 //This is the event listener for the remote button
@@ -321,7 +332,7 @@ namespace RDTool
 		string name = msclr::interop::marshal_as<std::string>(ctrl->Parent->Name->ToString());
 		selectedTree->find(name)->getInfo()->labView();
 	}
-			//This is the event listener for the magic packets butt
+			//This is the event listener for the magic packets button
 			//TODO: Need to test this
 	public: System::Void magicButton_Click(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -334,22 +345,16 @@ namespace RDTool
 	}
 	private: System::Void commandToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e)
 	{
-
-		//System::Windows::Forms::CommonDialog^ dialog = gcnew CommonDialog();
-
-
-		//MessageBoxButtons = MessageBoxButtons.YesNo;
-		/*RunCommand dlg;
-		dlg.ShowDialog();*/
-		//selectedTree->runCommand(command);
-		//test.AcceptsReturn = true;
-		//
-		//result = MessageBox::Show(this, message, caption, buttons);
 		string command = msclr::interop::marshal_as<std::string>(cmdBox->Text);
-		selectedTree->generateReport(command);
 		cmdBox->Text = L"";
+		selectedTree->generateReport(command);
+		String^ message = "Report Finshed. Check Your Desktop.";
+		String^ caption = "Command Tool";
+		MessageBoxButtons buttons = MessageBoxButtons::OK;
+		MessageBox::Show(this, message, caption, buttons);
+		
 	}
-	};
+};
 }
 
 

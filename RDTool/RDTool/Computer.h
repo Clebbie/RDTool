@@ -53,7 +53,7 @@ public:
 	void display();
 	string getLab();
 	string getCollege();
-	string runCommand(string cmd);
+	string runCommand(string cmd,bool checkUser);
 
 	bool operator <(Computer& comp);
 	bool operator >(Computer& comp);

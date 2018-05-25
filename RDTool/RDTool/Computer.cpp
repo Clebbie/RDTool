@@ -41,7 +41,6 @@ Computer::Computer(const Computer & comp)
 
 Computer::~Computer()
 {
-	//TODO: Finish writing this
 
 }
 
@@ -112,7 +111,7 @@ char* Computer::deepCopy(string cString)
 	return out;
 }
 
-string Computer::runCommand(string cmd)
+string Computer::runCommand(string cmd, bool checkUser)
 {
 	int size = cmd.size();
 	string command = "";
@@ -129,7 +128,7 @@ string Computer::runCommand(string cmd)
 	BOOL bSuccess = false;
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
-	string result = "Computer in Error State!";
+	string result = "Error";
 
 	ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
 
@@ -146,8 +145,15 @@ string Computer::runCommand(string cmd)
 		NULL,
 		&si,
 		&pi);
-
-	auto trial = WaitForSingleObject(pi.hProcess, 1000);
+	DWORD trial;
+	if (checkUser)
+	{
+		trial = WaitForSingleObject(pi.hProcess, 1000);
+	}
+	else
+	{
+		trial = WaitForSingleObject(pi.hProcess, INFINITE);
+	}
 
 	if (!bSuccess)
 	{
@@ -163,9 +169,6 @@ string Computer::runCommand(string cmd)
 			result = "";
 			const char* charCommand = command.c_str();
 			//TODO: Stop running the commmand twice. Find a way to get the out put from hStdOutput
-
-			//cout << "get into exec" << endl;
-
 			FILE* pipe = _popen(charCommand, "r");
 			if (!pipe) throw runtime_error("_popen() failed!");
 			try
@@ -192,31 +195,31 @@ string Computer::runCommand(string cmd)
 void Computer::checkUser()
 {
 	//Runs the command to find a user on a PC
-	string cmd = "wmic computersystem get username";		//Runs the command to find a user on a PC
-
-	string result = runCommand(cmd);
+	string cmd = "wmic computersystem get username";	
+	//Runs the command to find a user on a PC
+	string result = runCommand(cmd,true);
+	//Default value is computer is available. Then searches for the \ in SOONER\4x4
 	int newLine = string::npos;
 	newLine = result.find('\\');
-
-	
 	string user;
-	//result.find("SOONER") != string::npos
-	if (result == "Computer in Error State!")
+	//First check the result for error state, then check the newLine value for a \.
+	if (result[0] =='E')
 	{
 		setStatus(Status(Unknown));
 	}
+	else if (result[0] == '\r')
+	{
+		setStatus(Status(InUse));
+		user = "Unknown";
+		setUser(user);
+	}
 	else if (newLine == string::npos)
 	{
-		cout << "This is available" << endl;
 		setStatus(Status(Available));
 	}
-	//else if (result.find('E') != string::npos)
-	
 	else
 	{
 		setStatus(Status(InUse));
-		//user = result.substr(result.find('R') + 2, 8);
-		
 		user = result.substr(newLine + 1, 10);
 		setUser(user);
 	}

@@ -16,7 +16,6 @@ DWORD WINAPI Check(void *)
 	{
 		cout << "Checking statuses" << endl;
 		RDTool::MainWindow::selectedTree->checkStatus();
-		//TODO: Write the paint Panels method
 		RDTool::MainWindow::paintPanels(RDTool::MainWindow::selectedTree);
 		//RDTool::MainWindow::paintPanels();
 		cout << "Done. Now sleeping :3" << endl;
@@ -44,10 +43,6 @@ int main()
 	string* name = nullptr;
 	string* ip = nullptr;
 	string* mac = nullptr;
-
-
-	//TODO: Uncomment this when using on the actual thing
-	//cin.getline(header, 250);
 
 	//Set the name for the input file name
 	inputFileName = "SP18 Computer List.csv";
@@ -106,6 +101,9 @@ int main()
 	RDTool::MainWindow form(testerino);
 	HANDLE thread = CreateThread(NULL, 0, Check, NULL, 0, NULL);
 	Application::Run(%form);
+	//string command = "wmic /node:@c bios get serialnumber";
+	//string compName = "ls-admin-02";
+	//command._Replace_range(iterator<string> it = command.begin();)
 
 	return 0;
 }
