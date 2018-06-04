@@ -316,6 +316,18 @@ inline void ComputerTree<DT>::writeFile(ofstream& outputFile, string cmd)
 	else
 	{
 		report = _info->runCommand(cmd,false);
+		int find = report.find('<');
+		while (find != string::npos)
+		{
+			report.replace(find, 1, "&#60;");
+			find = report.find('<');
+		}
+		find = report.find('>');
+		while (find != string::npos)
+		{
+			report.replace(find, 1, "&#62;");
+			find = report.find('>');
+		}
 	}
 	//Write the report
 	outputFile << report << endl;

@@ -12,7 +12,7 @@ Computer::Computer()
 	_ip = "\0";
 	_mac = "\0";
 	_status = Computer::Unknown;
-	_selected = false;
+	_useIP = false;
 }
 
 Computer::Computer(string name, string ip, string mac, string college)
@@ -25,7 +25,7 @@ Computer::Computer(string name, string ip, string mac, string college)
 	size_t found = _name.find_last_of('-');
 	_lab = _name.substr(0, found);
 	_status = Computer::Unknown;
-	_selected = false;
+	_useIP = false;
 }
 
 Computer::Computer(const Computer & comp)
@@ -35,7 +35,7 @@ Computer::Computer(const Computer & comp)
 	_status = comp._status;
 	_mac = comp._mac;
 	_ip = comp._ip;
-	_selected = comp._selected;
+	_useIP = comp._useIP;
 
 }
 
@@ -62,9 +62,16 @@ int Computer::getStatus()
 	return _status;
 }
 
-bool Computer::isSelected()
+string Computer::connectWith()
 {
-	return _selected;
+	if (_useIP)
+	{
+		return _ip;
+	}
+	else
+	{
+		return _name;
+	}
 }
 
 string Computer::getName()
@@ -113,17 +120,14 @@ char* Computer::deepCopy(string cString)
 
 string Computer::runCommand(string cmd, bool checkUser)
 {
-	int size = cmd.size();
-	string command = "";
-	command += cmd.substr(0, 4);
+	string orgCMD = cmd;
 	//copy(cmd.begin(), cmd.end(), command);
-	command += " /node:\"" + _name;
-	command += "\" ";
-	command += cmd.substr(5, size);
-	TCHAR *param = new TCHAR[command.size() + 1];
-	param[command.size()] = 0;
+	int nameStart = cmd.find("@c");
+	cmd.replace(nameStart, 2, connectWith());
+	TCHAR *param = new TCHAR[cmd.size() + 1];
+	param[cmd.size()] = 0;
 
-	copy(command.begin(), command.end(), param);
+	copy(cmd.begin(), cmd.end(), param);
 
 	BOOL bSuccess = false;
 	STARTUPINFO si;
@@ -158,7 +162,8 @@ string Computer::runCommand(string cmd, bool checkUser)
 	if (!bSuccess)
 	{
 		cout << "Process failed" << endl;
-		cout << command << endl;
+		cout << cmd << endl;
+		_useIP = true;
 		ExitProcess(1);
 	}
 	else
@@ -167,7 +172,7 @@ string Computer::runCommand(string cmd, bool checkUser)
 		{
 			char buffer[128];
 			result = "";
-			const char* charCommand = command.c_str();
+			const char* charCommand = cmd.c_str();
 			//TODO: Stop running the commmand twice. Find a way to get the out put from hStdOutput
 			FILE* pipe = _popen(charCommand, "r");
 			if (!pipe) throw runtime_error("_popen() failed!");
@@ -187,15 +192,24 @@ string Computer::runCommand(string cmd, bool checkUser)
 			}
 			_pclose(pipe);
 		}
+		else if (trial == WAIT_TIMEOUT)
+		{
+			if (!_useIP)
+			{
+				_useIP = true;
+				return runCommand(orgCMD, checkUser);
+			}
+			
+		}
 		return result;
-
 	}
+	
 }
 
 void Computer::checkUser()
 {
 	//Runs the command to find a user on a PC
-	string cmd = "wmic computersystem get username";	
+	string cmd = "wmic /node:\"@c\" computersystem get username";	
 	//Runs the command to find a user on a PC
 	string result = runCommand(cmd,true);
 	//Default value is computer is available. Then searches for the \ in SOONER\4x4
@@ -228,7 +242,7 @@ void Computer::checkUser()
 void Computer::remoteDesktop()
 {
 	//If the staus is known, then connect using the name
-	if (_status != 2)
+	if (!_useIP)
 	{
 		string command = "mstsc.exe /v:" + _name;
 		FILE *f = _popen(command.c_str(), "r");
@@ -329,7 +343,7 @@ void Computer::operator=(const Computer & comp)
 	_status = comp._status;
 	_mac = comp._mac;
 	_ip = comp._ip;
-	_selected = comp._selected;
+	_useIP = comp._useIP;
 }
 
 void Computer::setStatus(Status newStatus)
@@ -352,12 +366,12 @@ void Computer::setIP(string& ip)
 
 void Computer::setSelection(bool selection)
 {
-	_selected = selection;
+	_useIP = selection;
 }
 
 int Computer::turnOn()
 {
-	string command = "start powershell.exe -noexit -file \"\\\\norfile\\ls-repo\\Repository\\Learning Spaces\\Sysadmin Tools\\Magic Packet\\wol2.ps1\" " + _mac + "-Verb RunAs";
+	string command = "start powershell.exe -noexit -file \"\\\\norfile\\ls-repo\\Repository\\Learning Spaces\\Sysadmin Tools\\Magic Packet\\wol2.ps1\" " + _mac + " -Verb RunAs";
 	FILE *f = _popen(command.c_str(), "r");
 	return 0;
 }

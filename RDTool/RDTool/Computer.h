@@ -17,7 +17,7 @@ protected:
 	Status _status;
 	string _mac;
 	string _ip;
-	bool _selected;
+	bool _useIP;
 
 public:
 	Computer();
@@ -31,7 +31,7 @@ public:
 	string getMac();
 	string getIP();
 	int getStatus();
-	bool isSelected();
+	string connectWith();
 
 	//setters
 	void setName(string name);

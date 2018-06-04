@@ -32,10 +32,15 @@ namespace RDTool
 			InitializeComponent();
 			populateViewTree(tree, computerTree);
 			isRemoving = false;
+			isChecking = false;
+			isAdding = false;
 		}
 	private: System::Windows::Forms::TextBox^  cmdBox;
 	private: System::Windows::Forms::Label^  computerCountLabel;
 			 int numOfComputers = 0;
+	private: System::Windows::Forms::Button^  command;
+
+
 	public:
 		static System::String^ cmd;
 		System::Windows::Forms::Panel^ createPanel(System::String^ name, System::String^ status, System::Windows::Forms::FlowLayoutPanel^ display);
@@ -43,6 +48,8 @@ namespace RDTool
 		static void paintPanels(ComputerTree<Computer>* tree);
 		static void runCommand(String^ cmd);
 		static bool isRemoving;
+		static bool isChecking;
+		static bool isAdding;
 
 	protected:
 		/// <summary>
@@ -59,16 +66,7 @@ namespace RDTool
 	private:
 		System::Windows::Forms::TreeView^  computerTree;
 		ComputerTree<Computer>* _tree;
-
-		System::Windows::Forms::Label^  label1;
-		//private: System::Windows::Forms::Button^  labViewButton;
-		System::Windows::Forms::Button^  remoteButton;
-		System::Windows::Forms::Button^  test;
 	private: static System::Windows::Forms::FlowLayoutPanel^  computerDisplay;
-
-
-
-
 
 
 		System::Windows::Forms::MenuStrip^  menuStrip1;
@@ -88,12 +86,11 @@ namespace RDTool
 		{
 			this->computerTree = (gcnew System::Windows::Forms::TreeView());
 			this->computerDisplay = (gcnew System::Windows::Forms::FlowLayoutPanel());
-			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->test = (gcnew System::Windows::Forms::Button());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->commandToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->cmdBox = (gcnew System::Windows::Forms::TextBox());
 			this->computerCountLabel = (gcnew System::Windows::Forms::Label());
+			this->command = (gcnew System::Windows::Forms::Button());
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -120,13 +117,6 @@ namespace RDTool
 			this->computerDisplay->Size = System::Drawing::Size(1716, 1017);
 			this->computerDisplay->TabIndex = 1;
 			// 
-			// test
-			// 
-			this->test->Location = System::Drawing::Point(0, 0);
-			this->test->Name = L"test";
-			this->test->Size = System::Drawing::Size(75, 23);
-			this->test->TabIndex = 0;
-			// 
 			// menuStrip1
 			// 
 			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->commandToolStripMenuItem });
@@ -139,8 +129,8 @@ namespace RDTool
 			// commandToolStripMenuItem
 			// 
 			this->commandToolStripMenuItem->Name = L"commandToolStripMenuItem";
-			this->commandToolStripMenuItem->Size = System::Drawing::Size(76, 20);
-			this->commandToolStripMenuItem->Text = L"Command";
+			this->commandToolStripMenuItem->Size = System::Drawing::Size(44, 20);
+			this->commandToolStripMenuItem->Text = L"Help";
 			this->commandToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::commandToolStripMenuItem_Click);
 			// 
 			// cmdBox
@@ -164,12 +154,24 @@ namespace RDTool
 			this->computerCountLabel->TabIndex = 4;
 			this->computerCountLabel->Text = L"Computers loaded: 0";
 			// 
+			// command
+			// 
+			this->command->Location = System::Drawing::Point(113, 0);
+			this->command->Name = L"command";
+			this->command->Size = System::Drawing::Size(75, 23);
+			this->command->TabIndex = 0;
+			this->command->Text = L"Command";
+			this->command->UseVisualStyleBackColor = true;
+			this->command->Click += gcnew System::EventHandler(this, &MainWindow::command_Click);
+			// 
 			// MainWindow
 			// 
+			this->AcceptButton = this->command;
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::SystemColors::Control;
 			this->ClientSize = System::Drawing::Size(1904, 1041);
+			this->Controls->Add(this->command);
 			this->Controls->Add(this->computerCountLabel);
 			this->Controls->Add(this->cmdBox);
 			this->Controls->Add(this->computerDisplay);
@@ -192,6 +194,7 @@ namespace RDTool
 		this->computerTree->UseWaitCursor = true;
 		this->computerDisplay->UseWaitCursor = true;
 		this->isRemoving = true;
+		this->isAdding = true;
 		//College level selected
 		if (e->Node->Level == 0)
 		{
@@ -291,11 +294,17 @@ namespace RDTool
 				numOfComputers++;
 				String^ computerCount = L"Computers Loaded: " + numOfComputers;
 				computerCountLabel->Text = computerCount;
+				
 
 
 			}
 			else
 			{
+				// This should stop the removing until the ischecking flag is set to false
+				while (isChecking)
+				{
+
+				}
 				//This will remove the panel and computer from the tree
 				string name = msclr::interop::marshal_as<std::string>(e->Node->Name);
 				ComputerTree<Computer>*temp = _tree->find(name);
@@ -305,11 +314,39 @@ namespace RDTool
 				numOfComputers--;
 				String^ computerCount = L"Computers Loaded: " + numOfComputers;
 				computerCountLabel->Text = computerCount;
+				int size = e->Node->Parent->GetNodeCount(false);
+				int falses = 0;
+				for (int i = 0; i < size; i++)
+				{
+					if (e->Node->Parent->Nodes[i]->Checked == false)
+					{
+						falses++;
+					}
+				}
+				if (size == falses)
+				{
+					e->Node->Parent->Checked = false;
+				}
+				size = e->Node->Parent->Parent->GetNodeCount(false);
+				falses = 0;
+				for (int i = 0; i < size; i++)
+				{
+					if (e->Node->Parent->Parent->Nodes[i]->Checked == false)
+					{
+						falses++;
+					}
+				}
+				if (size == falses)
+				{
+					e->Node->Parent->Parent->Checked = false;
+				}
 			}
 		}
+		
 		this->computerTree->UseWaitCursor = false;
 		this->computerDisplay->UseWaitCursor = false;
 		this->isRemoving = false;
+		this->isAdding = false;
 
 	}
 			 //This is the event listener for the remote button
@@ -345,15 +382,51 @@ namespace RDTool
 	}
 	private: System::Void commandToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e)
 	{
-		string command = msclr::interop::marshal_as<std::string>(cmdBox->Text);
-		cmdBox->Text = L"";
-		selectedTree->generateReport(command);
-		String^ message = "Report Finshed. Check Your Desktop.";
-		String^ caption = "Command Tool";
+		String^ message = "Type a wmic command and replace the computer name with @c. Ex. wmic /node:\"@c\" bios get serialnumber\nHelpful wmic commands\n\nwmic bios get serial number // gets service tag\n\nwmic nicconfig where ipenabled=true get ipaddress, macaddress // gets IPv4, IPv6, and MAC" +
+			"\n\nwmic product get // get all installed programs and their GUID's. USE SPARINGLY!\n\nwmic memorychip get capacity // gets the physical capacity of the memory ram in bytes\n\nwmic logicaldisk get size,freespace,caption // gets freespace and total space in bytes";
+		String^ caption = "Help";
 		MessageBoxButtons buttons = MessageBoxButtons::OK;
 		MessageBox::Show(this, message, caption, buttons);
-		
 	}
+	private: System::Void command_Click(System::Object^  sender, System::EventArgs^  e)
+	{
+		if (cmdBox->Text == L"")
+		{
+			String^ message = "Please enter a command.";
+			String^ caption = "Error";
+			MessageBoxButtons buttons = MessageBoxButtons::OK;
+			MessageBox::Show(this, message, caption, buttons);
+		}
+		else
+		{
+			
+			string command = msclr::interop::marshal_as<std::string>(cmdBox->Text);
+			int found = command.find("@c");
+			if (found != string::npos)
+			{
+				cmdBox->Text = L"";
+				selectedTree->generateReport(command);
+				String^ message = "Report Finshed. Check Your Desktop.";
+				String^ caption = "Command Tool";
+				MessageBoxButtons buttons = MessageBoxButtons::OK;
+				MessageBox::Show(this, message, caption, buttons);
+			}
+			else
+			{
+				String^ message = "Could not find @c\nWrite your command with @c replacing the computer name\ni.e. wmic /node:\"@c\" bios get serialnumber or ping @c";
+				String^ caption = "Error";
+				MessageBoxButtons buttons = MessageBoxButtons::OK;
+				MessageBox::Show(this, message, caption, buttons);
+			}
+		}
+	}
+private: System::Void computerRemove_Click(System::Object^  sender, System::EventArgs^  e) 
+{
+	Button^ ctrl = safe_cast<Button^>(sender);
+	string name = msclr::interop::marshal_as<std::string>(ctrl->Parent->Name->ToString());
+	auto temp = computerTree->Nodes->Find(ctrl->Parent->Name, true);
+	temp[0]->Checked = false;
+}
 };
 }
 

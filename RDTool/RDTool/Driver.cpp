@@ -14,13 +14,16 @@ DWORD WINAPI Check(void *)
 {
 	while (true)
 	{
-		cout << "Checking statuses" << endl;
-		RDTool::MainWindow::selectedTree->checkStatus();
-		RDTool::MainWindow::paintPanels(RDTool::MainWindow::selectedTree);
-		//RDTool::MainWindow::paintPanels();
-		cout << "Done. Now sleeping :3" << endl;
-		
-		Sleep(60000);
+		if (RDTool::MainWindow::isRemoving == false || RDTool::MainWindow::isAdding == false)
+		{
+			RDTool::MainWindow::isChecking = true;
+			cout << "Checking statuses" << endl;
+			RDTool::MainWindow::selectedTree->checkStatus();
+			RDTool::MainWindow::paintPanels(RDTool::MainWindow::selectedTree);
+			cout << "Done. Now sleeping :3" << endl;
+			RDTool::MainWindow::isChecking = false;
+			Sleep(60000);
+		}
 	}
 	return 0;
 }
@@ -101,9 +104,12 @@ int main()
 	RDTool::MainWindow form(testerino);
 	HANDLE thread = CreateThread(NULL, 0, Check, NULL, 0, NULL);
 	Application::Run(%form);
-	//string command = "wmic /node:@c bios get serialnumber";
-	//string compName = "ls-admin-02";
-	//command._Replace_range(iterator<string> it = command.begin();)
-
+	/*string command = "wmic /node:\"@c\" bios get serialnumber";
+	cout << command << endl;
+	string compName = "ls-admin-02";
+	int at1 = command.find("@c");
+	const string::const_iterator it;
+	command.replace(at1, 2, compName);
+	cout << command << endl;*/
 	return 0;
 }
