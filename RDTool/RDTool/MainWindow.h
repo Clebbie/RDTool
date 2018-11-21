@@ -39,6 +39,13 @@ namespace RDTool
 	private: System::Windows::Forms::Label^  computerCountLabel;
 			 int numOfComputers = 0;
 	private: System::Windows::Forms::Button^  command;
+	private: System::Windows::Forms::Label^  selectedCollegeLabel;
+	private: System::Windows::Forms::Label^  selectedIPLabel;
+	private: System::Windows::Forms::Label^  selectedMACLabel;
+	private: System::Windows::Forms::Label^  selectedByIPLabel;
+	private: System::Windows::Forms::Label^  lastUserCheckLabel;
+	private: System::Windows::Forms::Panel^  userCheckPanel;
+
 
 
 	public:
@@ -50,6 +57,7 @@ namespace RDTool
 		static bool isRemoving;
 		static bool isChecking;
 		static bool isAdding;
+		static bool isSelected;
 
 	protected:
 		/// <summary>
@@ -66,7 +74,8 @@ namespace RDTool
 	private:
 		System::Windows::Forms::TreeView^  computerTree;
 		ComputerTree<Computer>* _tree;
-	private: static System::Windows::Forms::FlowLayoutPanel^  computerDisplay;
+	private: System::Windows::Forms::FlowLayoutPanel^  computerDisplay;
+
 
 
 		System::Windows::Forms::MenuStrip^  menuStrip1;
@@ -91,7 +100,14 @@ namespace RDTool
 			this->cmdBox = (gcnew System::Windows::Forms::TextBox());
 			this->computerCountLabel = (gcnew System::Windows::Forms::Label());
 			this->command = (gcnew System::Windows::Forms::Button());
+			this->selectedCollegeLabel = (gcnew System::Windows::Forms::Label());
+			this->selectedIPLabel = (gcnew System::Windows::Forms::Label());
+			this->selectedMACLabel = (gcnew System::Windows::Forms::Label());
+			this->selectedByIPLabel = (gcnew System::Windows::Forms::Label());
+			this->lastUserCheckLabel = (gcnew System::Windows::Forms::Label());
+			this->userCheckPanel = (gcnew System::Windows::Forms::Panel());
 			this->menuStrip1->SuspendLayout();
+			this->userCheckPanel->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// computerTree
@@ -109,12 +125,11 @@ namespace RDTool
 			// computerDisplay
 			// 
 			this->computerDisplay->AutoScroll = true;
-			this->computerDisplay->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->computerDisplay->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->computerDisplay->Location = System::Drawing::Point(188, 24);
 			this->computerDisplay->Name = L"computerDisplay";
-			this->computerDisplay->Size = System::Drawing::Size(1716, 1017);
+			this->computerDisplay->Size = System::Drawing::Size(1417, 1017);
 			this->computerDisplay->TabIndex = 1;
 			// 
 			// menuStrip1
@@ -148,7 +163,7 @@ namespace RDTool
 			this->computerCountLabel->AutoSize = true;
 			this->computerCountLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->computerCountLabel->Location = System::Drawing::Point(1644, 0);
+			this->computerCountLabel->Location = System::Drawing::Point(1611, 0);
 			this->computerCountLabel->Name = L"computerCountLabel";
 			this->computerCountLabel->Size = System::Drawing::Size(176, 22);
 			this->computerCountLabel->TabIndex = 4;
@@ -164,6 +179,66 @@ namespace RDTool
 			this->command->UseVisualStyleBackColor = true;
 			this->command->Click += gcnew System::EventHandler(this, &MainWindow::command_Click);
 			// 
+			// selectedCollegeLabel
+			// 
+			this->selectedCollegeLabel->AutoSize = true;
+			this->selectedCollegeLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
+			this->selectedCollegeLabel->Location = System::Drawing::Point(1611, 75);
+			this->selectedCollegeLabel->Name = L"selectedCollegeLabel";
+			this->selectedCollegeLabel->Size = System::Drawing::Size(66, 20);
+			this->selectedCollegeLabel->TabIndex = 5;
+			this->selectedCollegeLabel->Text = L"College:";
+			// 
+			// selectedIPLabel
+			// 
+			this->selectedIPLabel->AutoSize = true;
+			this->selectedIPLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
+			this->selectedIPLabel->Location = System::Drawing::Point(1611, 112);
+			this->selectedIPLabel->Name = L"selectedIPLabel";
+			this->selectedIPLabel->Size = System::Drawing::Size(28, 20);
+			this->selectedIPLabel->TabIndex = 6;
+			this->selectedIPLabel->Text = L"IP:";
+			// 
+			// selectedMACLabel
+			// 
+			this->selectedMACLabel->AutoSize = true;
+			this->selectedMACLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
+			this->selectedMACLabel->Location = System::Drawing::Point(1611, 149);
+			this->selectedMACLabel->Name = L"selectedMACLabel";
+			this->selectedMACLabel->Size = System::Drawing::Size(48, 20);
+			this->selectedMACLabel->TabIndex = 7;
+			this->selectedMACLabel->Text = L"MAC:";
+			// 
+			// selectedByIPLabel
+			// 
+			this->selectedByIPLabel->AutoSize = true;
+			this->selectedByIPLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
+			this->selectedByIPLabel->Location = System::Drawing::Point(1611, 180);
+			this->selectedByIPLabel->Name = L"selectedByIPLabel";
+			this->selectedByIPLabel->Size = System::Drawing::Size(130, 20);
+			this->selectedByIPLabel->TabIndex = 8;
+			this->selectedByIPLabel->Text = L"Connected by IP:";
+			// 
+			// lastUserCheckLabel
+			// 
+			this->lastUserCheckLabel->AutoSize = true;
+			this->lastUserCheckLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
+			this->lastUserCheckLabel->Location = System::Drawing::Point(3, 10);
+			this->lastUserCheckLabel->Name = L"lastUserCheckLabel";
+			this->lastUserCheckLabel->Size = System::Drawing::Size(135, 20);
+			this->lastUserCheckLabel->TabIndex = 9;
+			this->lastUserCheckLabel->Text = L"Last User Check: ";
+			this->lastUserCheckLabel->Click += gcnew System::EventHandler(this, &MainWindow::lastUserCheckLabel_Click);
+			// 
+			// userCheckPanel
+			// 
+			this->userCheckPanel->Controls->Add(this->lastUserCheckLabel);
+			this->userCheckPanel->Location = System::Drawing::Point(1615, 27);
+			this->userCheckPanel->Name = L"userCheckPanel";
+			this->userCheckPanel->Size = System::Drawing::Size(277, 45);
+			this->userCheckPanel->TabIndex = 10;
+			this->userCheckPanel->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MainWindow::userCheckPanel_Paint);
+			// 
 			// MainWindow
 			// 
 			this->AcceptButton = this->command;
@@ -171,6 +246,11 @@ namespace RDTool
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::SystemColors::Control;
 			this->ClientSize = System::Drawing::Size(1904, 1041);
+			this->Controls->Add(this->userCheckPanel);
+			this->Controls->Add(this->selectedByIPLabel);
+			this->Controls->Add(this->selectedMACLabel);
+			this->Controls->Add(this->selectedIPLabel);
+			this->Controls->Add(this->selectedCollegeLabel);
 			this->Controls->Add(this->command);
 			this->Controls->Add(this->computerCountLabel);
 			this->Controls->Add(this->cmdBox);
@@ -180,8 +260,11 @@ namespace RDTool
 			this->MainMenuStrip = this->menuStrip1;
 			this->Name = L"MainWindow";
 			this->Text = L"RDTool";
+			this->Load += gcnew System::EventHandler(this, &MainWindow::MainWindow_Load);
 			this->menuStrip1->ResumeLayout(false);
 			this->menuStrip1->PerformLayout();
+			this->userCheckPanel->ResumeLayout(false);
+			this->userCheckPanel->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -426,6 +509,12 @@ private: System::Void computerRemove_Click(System::Object^  sender, System::Even
 	string name = msclr::interop::marshal_as<std::string>(ctrl->Parent->Name->ToString());
 	auto temp = computerTree->Nodes->Find(ctrl->Parent->Name, true);
 	temp[0]->Checked = false;
+}
+private: System::Void MainWindow_Load(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void lastUserCheckLabel_Click(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void userCheckPanel_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
 }
 };
 }
