@@ -32,6 +32,7 @@ public:
 	string getIP();
 	int getStatus();
 	string connectWith();
+	bool isUsingIP();
 
 	//setters
 	void setName(string name);
@@ -44,6 +45,8 @@ public:
 	//Four main functions
 	int turnOn();
 	void remoteDesktop();
+	void remotedDesktopLocalAdmin();
+	void remotedDesktopLabTester();
 	void labView();
 	void writeCommand(string command);
 
@@ -54,6 +57,7 @@ public:
 	string getLab();
 	string getCollege();
 	string runCommand(string cmd,bool checkUser);
+	string parseFreeSpace(string rawData);
 
 	bool operator <(Computer& comp);
 	bool operator >(Computer& comp);

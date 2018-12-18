@@ -159,6 +159,10 @@
   <ItemGroup>
     <ResourceCompile Include="RDTool.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\labTester.rdp" />
+    <None Include="..\..\..\..\localAdmin.rdp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

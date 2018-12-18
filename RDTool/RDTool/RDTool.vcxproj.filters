@@ -49,10 +49,21 @@
     <EmbeddedResource Include="MainWindow.resx">
       <Filter>Resource Files</Filter>
     </EmbeddedResource>
+    <EmbeddedResource Include="RunCommand.resx">
+      <Filter>Resource Files</Filter>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RDTool.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\localAdmin.rdp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\..\labTester.rdp">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

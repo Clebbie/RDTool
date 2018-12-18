@@ -10,23 +10,24 @@ using namespace System;
 using namespace System::Windows::Forms;
 
 //This is the thread to execute every minute
-DWORD WINAPI Check(void *)
-{
-	while (true)
-	{
-		if (RDTool::MainWindow::isRemoving == false || RDTool::MainWindow::isAdding == false)
-		{
-			RDTool::MainWindow::isChecking = true;
-			cout << "Checking statuses" << endl;
-			RDTool::MainWindow::selectedTree->checkStatus();
-			RDTool::MainWindow::paintPanels(RDTool::MainWindow::selectedTree);
-			cout << "Done. Now sleeping :3" << endl;
-			RDTool::MainWindow::isChecking = false;
-			Sleep(60000);
-		}
-	}
-	return 0;
-}
+//DWORD WINAPI Check(void *)
+//{
+//	while (true)
+//	{
+//		if (RDTool::MainWindow::isRemoving == false || RDTool::MainWindow::isAdding == false)
+//		{
+//			RDTool::MainWindow::isChecking = true;
+//			cout << "Checking statuses" << endl;
+//			RDTool::MainWindow::selectedTree->checkStatus();
+//			RDTool::MainWindow::paintPanels(RDTool::MainWindow::selectedTree);
+//			RDTool::MainWindow::computerDisplay.invo
+//			cout << "Done. Now sleeping :3" << endl;
+//			RDTool::MainWindow::isChecking = false;
+//			Sleep(60000);
+//		}
+//	}
+//	return 0;
+//}
 
 int main()
 {
@@ -102,7 +103,7 @@ int main()
 
 	//system("PAUSE");
 	RDTool::MainWindow form(testerino);
-	HANDLE thread = CreateThread(NULL, 0, Check, NULL, 0, NULL);
+	//HANDLE thread = CreateThread(NULL, 0, Check, NULL, 0, NULL);
 	Application::Run(%form);
 	/*string command = "wmic /node:\"@c\" bios get serialnumber";
 	cout << command << endl;

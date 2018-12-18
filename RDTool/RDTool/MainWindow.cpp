@@ -125,7 +125,6 @@ void RDTool::MainWindow::paintPanels(ComputerTree<Computer>* tree)
 			if (!isRemoving)
 			{
 				paintPanels(tree->getRight());
-
 			}
 		}
 	}
@@ -136,6 +135,32 @@ void RDTool::MainWindow::runCommand(String^ cmd)
 	//throw gcnew System::NotImplementedException();
 	string command = msclr::interop::marshal_as<std::string>(cmd);
 	selectedTree->runCommand(command);
+}
+
+String ^ RDTool::MainWindow::currentDateTime()
+{
+	cout << "Getting time..." << endl;
+	time_t now = time(0);
+	struct tm tstruct;
+	char buf[80];
+	tstruct = *localtime(&now);
+	strftime(buf, sizeof(buf), "%X", &tstruct);
+	cout << "Finished!" << endl;
+	String^ lastCheckBase = (L"Last Checked: " + gcnew String(buf));
+	cout << "Label is set up..." << endl;
+
+	return lastCheckBase;
+}
+
+void RDTool::MainWindow::clearSelected()
+{
+	selectedNameLabel->Text = L"Name: ";
+	selectedCollegeLabel->Text = L"College: ";
+	selectedByIPLabel->Text = L"Connected by IP: ";
+	selectedMACLabel->Text = L"MAC: ";
+	selectedIPLabel->Text = L"IP: ";
+	freeMemoryLabel->Text = L"Free Memory: ";
+	selectedComputer = NULL;
 }
 
 
@@ -241,6 +266,12 @@ System::Windows::Forms::Panel^ RDTool::MainWindow::createPanel(System::String ^ 
 	labViewButton->Click += gcnew System::EventHandler(this, &MainWindow::labViewButton_Click);
 	magicButton->Click += gcnew System::EventHandler(this, &MainWindow::magicButton_Click);
 	computerRemove->Click += gcnew System::EventHandler(this, &MainWindow::computerRemove_Click);
+	pan->Click += gcnew System::EventHandler(this, &MainWindow::panel_Clicked);
+	labelName->Click += gcnew System::EventHandler(this, &MainWindow::labelOnPanel_Clicked);
+	computerStatus->Click += gcnew System::EventHandler(this, &MainWindow::labelOnPanel_Clicked);
+	remoteButton->Click += gcnew System::EventHandler(this, &MainWindow::buttonOnPanel_Clicked);
+	labViewButton->Click += gcnew System::EventHandler(this, &MainWindow::buttonOnPanel_Clicked);
+	magicButton->Click += gcnew System::EventHandler(this, &MainWindow::buttonOnPanel_Clicked);
 	display->Padding.All = 10;
 	return pan;
 

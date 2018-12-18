@@ -74,6 +74,11 @@ string Computer::connectWith()
 	}
 }
 
+bool Computer::isUsingIP()
+{
+	return _useIP;
+}
+
 string Computer::getName()
 {
 	return _name;
@@ -206,6 +211,33 @@ string Computer::runCommand(string cmd, bool checkUser)
 	
 }
 
+string Computer::parseFreeSpace(string rawData)
+{
+	int numberStart = rawData.find("\n");
+	int numberEnd = rawData.find_last_of("\n");
+	string parsedData;
+	if (numberStart == numberEnd)
+	{
+		numberStart++;
+		parsedData = rawData.substr(numberStart);
+	}
+	else
+	{
+		numberStart++;
+		parsedData = rawData.substr(numberStart, numberEnd);
+	}
+	double divisor = 1024;
+	divisor = divisor * divisor * divisor;
+	double freeSpace = stod(parsedData);
+	freeSpace = freeSpace / divisor;
+	parsedData = to_string(freeSpace);
+
+	
+	//cout << parsedData << endl;
+
+	return parsedData;
+}
+
 void Computer::checkUser()
 {
 	//Runs the command to find a user on a PC
@@ -253,6 +285,36 @@ void Computer::remoteDesktop()
 		string command = "mstsc.exe /v:" + _ip;
 		FILE *f = _popen(command.c_str(), "r");
 	}
+}
+
+void Computer::remotedDesktopLocalAdmin()
+{
+	string command = "mstsc.exe \"\\\\norfile.net.ou.edu\\ls-repo\\Repository\\Learning Spaces\\Sysadmin Tools\\RDTool\\RD Profiles\\localAdmin.rdp\" /v:";
+	if (!_useIP)
+	{
+		command += _name;
+	}
+	else
+	{
+		command += _ip;
+
+	}
+	FILE *f = _popen(command.c_str(), "r");
+}
+
+void Computer::remotedDesktopLabTester()
+{
+	string command = "mstsc.exe \"\\\\norfile.net.ou.edu\\ls-repo\\Repository\\Learning Spaces\\Sysadmin Tools\\RDTool\\RD Profiles\\labTester.rdp\" /v:";
+	if (!_useIP)
+	{
+		command += _name;
+	}
+	else
+	{
+		command += _ip;
+
+	}
+	FILE *f = _popen(command.c_str(), "r");
 }
 
 void Computer::labView()
